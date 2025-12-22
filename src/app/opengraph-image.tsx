@@ -4,6 +4,9 @@ import { sharedMetadata } from '@/app/shared-metadata'
 import { OpenGraphImage } from '@/components/content/og-image'
 import { getBoldFont, getRegularFont } from '@/lib/fonts'
 
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 export const alt = sharedMetadata.title
 export const size = {
   width: sharedMetadata.ogImage.width,

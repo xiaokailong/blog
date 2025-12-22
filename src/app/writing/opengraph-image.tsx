@@ -5,6 +5,9 @@ import { OpenGraphImage } from '@/components/content/og-image'
 import { getPageSeo } from '@/lib/contentful'
 import { getBoldFont, getRegularFont } from '@/lib/fonts'
 
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
+
 export const alt = 'Writing'
 export const size = {
   width: sharedMetadata.ogImage.width,

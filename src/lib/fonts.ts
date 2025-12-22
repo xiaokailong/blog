@@ -7,9 +7,10 @@ import { cache } from 'react'
  */
 export const getRegularFont = cache(async () => {
   // Use fetch to load font from public folder for Edge Runtime compatibility
-  const url = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}/fonts/Geist-Regular.otf`
-    : 'http://localhost:3000/fonts/Geist-Regular.otf'
+  const baseUrl = process.env.CF_PAGES_URL || process.env.VERCEL_URL 
+    ? `https://${process.env.CF_PAGES_URL || process.env.VERCEL_URL}`
+    : 'http://localhost:3000'
+  const url = `${baseUrl}/fonts/Geist-Regular.otf`
   
   const response = await fetch(url)
   return await response.arrayBuffer()
@@ -22,10 +23,12 @@ export const getRegularFont = cache(async () => {
  */
 export const getBoldFont = cache(async () => {
   // Use fetch to load font from public folder for Edge Runtime compatibility
-  const url = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}/fonts/Geist-Medium.otf`
-    : 'http://localhost:3000/fonts/Geist-Medium.otf'
+  const baseUrl = process.env.CF_PAGES_URL || process.env.VERCEL_URL 
+    ? `https://${process.env.CF_PAGES_URL || process.env.VERCEL_URL}`
+    : 'http://localhost:3000'
+  const url = `${baseUrl}/fonts/Geist-Medium.otf`
   
   const response = await fetch(url)
   return await response.arrayBuffer()
+})
 })
