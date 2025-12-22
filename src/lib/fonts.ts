@@ -31,4 +31,3 @@ export const getBoldFont = cache(async () => {
   const response = await fetch(url)
   return await response.arrayBuffer()
 })
-})
