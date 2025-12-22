@@ -9,15 +9,3 @@ binding = "DB" # 在代码中通过 env.DB 访问
 database_name = "blog-db"
 database_id = "3dd242d5-f86b-4acb-83e8-04945a47a525"
 
-# 环境变量（敏感信息请使用 wrangler secret put 命令）
-[vars]
-NODE_ENV = "production"
-
-# 开发环境配置
-[env.development]
-name = "blog-app-dev"
-
-[[env.development.d1_databases]]
-binding = "DB"
-database_name = "blog-db"
-database_id = "3dd242d5-f86b-4acb-83e8-04945a47a525"
