@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises'
-
 import { cache } from 'react'
 
 /**
@@ -8,10 +6,13 @@ import { cache } from 'react'
  * @returns A Promise resolving to the regular font file as an array buffer.
  */
 export const getRegularFont = cache(async () => {
-  const response = await readFile('src/assets/fonts/Geist-Regular.otf')
-  const font = Uint8Array.from(response).buffer
-
-  return font
+  // Use fetch to load font from public folder for Edge Runtime compatibility
+  const url = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}/fonts/Geist-Regular.otf`
+    : 'http://localhost:3000/fonts/Geist-Regular.otf'
+  
+  const response = await fetch(url)
+  return await response.arrayBuffer()
 })
 
 /**
@@ -20,7 +21,11 @@ export const getRegularFont = cache(async () => {
  * @returns A Promise resolving to the bold font file as an array buffer.
  */
 export const getBoldFont = cache(async () => {
-  const response = await readFile('src/assets/fonts/Geist-Medium.otf')
-  const font = Uint8Array.from(response).buffer
-  return font
+  // Use fetch to load font from public folder for Edge Runtime compatibility
+  const url = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}/fonts/Geist-Medium.otf`
+    : 'http://localhost:3000/fonts/Geist-Medium.otf'
+  
+  const response = await fetch(url)
+  return await response.arrayBuffer()
 })
