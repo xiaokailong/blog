@@ -14,12 +14,6 @@ import { getDateTimeFormat, isDevelopment } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  const allPosts = await getAllPostSlugs()
-  if (!allPosts) return []
-  return allPosts.map((post) => ({ slug: post.slug }))
-}
-
 async function fetchData(slug) {
   const { isEnabled } = await draftMode()
   const data = await getPost(slug, isDevelopment ? true : isEnabled)

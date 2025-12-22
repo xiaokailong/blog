@@ -6,19 +6,7 @@ import { getAllPageSlugs, getPageSeo } from '@/lib/contentful'
 import { getBoldFont, getRegularFont } from '@/lib/fonts'
 
 export const runtime = 'edge'
-export const dynamic = 'force-static'
-
-
-
-export async function generateStaticParams() {
-  const allPages = await getAllPageSlugs()
-
-  return allPages
-    .filter((page) => !page.hasCustomPage) // filter out pages that have custom pages, e.g. /journey
-    .map((page) => ({
-      slug: page.slug
-    }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function GET(_, props) {
   const params = await props.params

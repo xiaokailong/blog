@@ -15,17 +15,6 @@ import { isDevelopment } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  const allPages = await getAllPageSlugs()
-  if (!allPages) return []
-
-  return allPages
-    .filter((page) => !page.hasCustomPage) // filter out pages that have custom pages, e.g. /journey
-    .map((page) => ({
-      slug: page.slug
-    }))
-}
-
 async function fetchData(slug) {
   const { isEnabled } = await draftMode()
   const page = await getPage(slug, isDevelopment || isEnabled)

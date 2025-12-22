@@ -12,12 +12,6 @@ import { sortByProperty } from '@/lib/utils'
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  const bookmarksResult = await getBookmarks()
-  if (!bookmarksResult || !bookmarksResult.items) return []
-  return bookmarksResult.items.map((bookmark) => ({ slug: bookmark.slug }))
-}
-
 async function fetchData(slug) {
   const bookmarksResult = await getBookmarks()
   const bookmarks = bookmarksResult?.items || []

@@ -8,14 +8,7 @@ import { getBoldFont, getRegularFont } from '@/lib/fonts'
 import { isDevelopment } from '@/lib/utils'
 
 export const runtime = 'edge'
-export const dynamic = 'force-static'
-
-
-
-export async function generateStaticParams() {
-  const allPosts = await getAllPostSlugs()
-  return allPosts.map((post) => ({ slug: post.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function GET(_, props) {
   const params = await props.params
