@@ -7,10 +7,10 @@ import { usePathname } from 'next/navigation'
 import { memo, useEffect, useMemo, useState } from 'react'
 import Balancer from 'react-wrap-balancer'
 
-import { LoadingSpinner } from '@/components/loading-spinner'
+import { LoadingSpinner } from '@/components/common/loading-spinner'
 import { Button } from '@/components/ui/button'
 
-const MobileDrawer = dynamic(() => import('@/components/mobile-drawer').then((mod) => mod.MobileDrawer))
+const MobileDrawer = dynamic(() => import('@/components/layout/mobile-drawer').then((mod) => mod.MobileDrawer))
 const SubmitBookmarkDrawer = dynamic(
   () => import('@/components/submit-bookmark/drawer').then((mod) => mod.SubmitBookmarkDrawer),
   {

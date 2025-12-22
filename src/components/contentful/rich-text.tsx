@@ -2,8 +2,8 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types'
 import dynamic from 'next/dynamic'
 
-import { Link } from '@/components/link'
-import { ShowInView } from '@/components/show-in-view'
+import { Link } from '@/components/common/link'
+import { ShowInView } from '@/components/common/show-in-view'
 
 const TweetCard = dynamic(() => import('@/components/tweet-card/tweet-card').then((mod) => mod.TweetCard))
 const CodeBlock = dynamic(() => import('@/components/contentful/code-block').then((mod) => mod.CodeBlock))

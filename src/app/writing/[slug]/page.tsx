@@ -1,12 +1,12 @@
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
-import { ClientOnly } from '@/components/client-only'
+import { ClientOnly } from '@/components/common/client-only'
 import { RichText } from '@/components/contentful/rich-text'
-import { FloatingHeader } from '@/components/floating-header'
-import { PageTitle } from '@/components/page-title'
-import { ScrollArea } from '@/components/scroll-area'
-import { WritingViews } from '@/components/writing-views'
+import { FloatingHeader } from '@/components/layout/floating-header'
+import { PageTitle } from '@/components/content/page-title'
+import { ScrollArea } from '@/components/layout/scroll-area'
+import { WritingViews } from '@/components/writing/writing-views'
 import { getAllPostSlugs, getPost, getWritingSeo } from '@/lib/contentful'
 import { getDateTimeFormat, isDevelopment } from '@/lib/utils'
 

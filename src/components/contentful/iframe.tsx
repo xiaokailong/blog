@@ -1,4 +1,4 @@
-import { ShowInView } from '@/components/show-in-view'
+import { ShowInView } from '@/components/common/show-in-view'
 import { cn } from '@/lib/utils'
 
 export function Iframe({ embedUrl, title, className, ...rest }: any) {

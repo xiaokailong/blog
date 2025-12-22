@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
 
-import { WritingLink } from '@/components/writing-link'
+import { WritingLink } from '@/components/writing/writing-link'
 import { useViewData } from '@/hooks/useViewData'
 import { cn } from '@/lib/utils'
 

@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-import { FloatingHeader } from '@/components/floating-header'
-import { PageTitle } from '@/components/page-title'
-import { ScreenLoadingSpinner } from '@/components/screen-loading-spinner'
-import { ScrollArea } from '@/components/scroll-area'
+import { FloatingHeader } from '@/components/layout/floating-header'
+import { PageTitle } from '@/components/content/page-title'
+import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
+import { ScrollArea } from '@/components/layout/scroll-area'
 import { Button } from '@/components/ui/button'
-import { WritingList } from '@/components/writing-list'
+import { WritingList } from '@/components/writing/writing-list'
 import { getAllPosts } from '@/lib/contentful'
 import { getItemsByYear, getSortedPosts } from '@/lib/utils'
 

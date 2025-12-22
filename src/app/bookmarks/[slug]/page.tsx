@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { BookmarkList } from '@/components/bookmark-list'
-import { FloatingHeader } from '@/components/floating-header'
-import { PageTitle } from '@/components/page-title'
-import { ScreenLoadingSpinner } from '@/components/screen-loading-spinner'
-import { ScrollArea } from '@/components/scroll-area'
+import { BookmarkList } from '@/components/bookmarks/bookmark-list'
+import { FloatingHeader } from '@/components/layout/floating-header'
+import { PageTitle } from '@/components/content/page-title'
+import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
+import { ScrollArea } from '@/components/layout/scroll-area'
 import { getBookmarkItems, getBookmarks } from '@/lib/raindrop'
 import { sortByProperty } from '@/lib/utils'
 

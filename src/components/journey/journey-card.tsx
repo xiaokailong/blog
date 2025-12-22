@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import { memo } from 'react'
 
-const MarkdownRenderer = dynamic(() => import('@/components/markdown-renderer').then((mod) => mod.MarkdownRenderer))
+const MarkdownRenderer = dynamic(() => import('@/components/content/markdown-renderer').then((mod) => mod.MarkdownRenderer))
 
 export const JourneyCard = memo(({ title, description, image, index }: any) => {
   return (

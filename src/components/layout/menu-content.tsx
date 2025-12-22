@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { NavigationLink } from '@/components/navigation-link'
+import { NavigationLink } from '@/components/layout/navigation-link'
 import { LINKS, PROFILES } from '@/lib/constants'
 
 export const MenuContent = () => (

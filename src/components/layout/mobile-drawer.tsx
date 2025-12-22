@@ -1,6 +1,6 @@
 import { CommandIcon } from 'lucide-react'
 
-import { MenuContent } from '@/components/menu-content'
+import { MenuContent } from '@/components/layout/menu-content'
 import { Button } from '@/components/ui/button'
 import {
   Drawer,

@@ -1,11 +1,11 @@
 import { Suspense } from 'react'
 
-import { FloatingHeader } from '@/components/floating-header'
-import { GradientBg3 } from '@/components/gradient-bg'
-import { JourneyCard } from '@/components/journey-card'
-import { PageTitle } from '@/components/page-title'
-import { ScreenLoadingSpinner } from '@/components/screen-loading-spinner'
-import { ScrollArea } from '@/components/scroll-area'
+import { FloatingHeader } from '@/components/layout/floating-header'
+import { GradientBg3 } from '@/components/common/gradient-bg'
+import { JourneyCard } from '@/components/journey/journey-card'
+import { PageTitle } from '@/components/content/page-title'
+import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
+import { ScrollArea } from '@/components/layout/scroll-area'
 import { getAllLogbook, getPageSeo } from '@/lib/contentful'
 
 async function fetchData() {

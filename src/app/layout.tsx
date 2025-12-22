@@ -8,9 +8,9 @@ import { draftMode } from 'next/headers'
 import Script from 'next/script'
 
 import { sharedMetadata } from '@/app/shared-metadata'
-import { MenuContent } from '@/components/menu-content'
-import { SideMenu } from '@/components/side-menu'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
+import { MenuContent } from '@/components/layout/menu-content'
+import { SideMenu } from '@/components/layout/side-menu'
+import { TailwindIndicator } from '@/components/common/tailwind-indicator'
 import { PROFILES } from '@/lib/constants'
 import { preloadGetAllPosts } from '@/lib/contentful'
 
