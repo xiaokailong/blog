@@ -2,6 +2,7 @@ import { Feed } from 'feed'
 
 import { getBookmarkItems, getBookmarks } from '@/lib/raindrop'
 
+export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {

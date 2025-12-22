@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server'
 import { d1Helper } from '@/lib/d1'
 import { getDB } from '@/lib/db'
 
+export const runtime = 'edge'
+
 // 数据库初始化脚本
 const INIT_SQL = `
 -- Create posts table

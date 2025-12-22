@@ -2,6 +2,7 @@ import { draftMode } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 
+export const runtime = 'edge'
 export const dynamic = 'force-static'
 
 export async function GET(request) {

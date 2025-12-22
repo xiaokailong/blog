@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/layout/scroll-area'
 import { getBookmarkItems, getBookmarks } from '@/lib/raindrop'
 import { sortByProperty } from '@/lib/utils'
 
+export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 export async function generateStaticParams() {

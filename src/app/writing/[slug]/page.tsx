@@ -8,6 +8,8 @@ import { PageTitle } from '@/components/content/page-title'
 import { ScrollArea } from '@/components/layout/scroll-area'
 import { WritingViews } from '@/components/writing/writing-views'
 import { getAllPostSlugs, getPost, getWritingSeo } from '@/lib/contentful'
+
+export const runtime = 'edge'
 import { getDateTimeFormat, isDevelopment } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'

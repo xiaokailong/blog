@@ -5,6 +5,7 @@ import { OpenGraphImage } from '@/components/content/og-image'
 import { getBoldFont, getRegularFont } from '@/lib/fonts'
 import { getBookmarks } from '@/lib/raindrop'
 
+export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 

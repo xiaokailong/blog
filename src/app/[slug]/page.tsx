@@ -9,6 +9,8 @@ import { PageTitle } from '@/components/content/page-title'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { ScrollArea } from '@/components/layout/scroll-area'
 import { getAllPageSlugs, getPage, getPageSeo } from '@/lib/contentful'
+
+export const runtime = 'edge'
 import { isDevelopment } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'

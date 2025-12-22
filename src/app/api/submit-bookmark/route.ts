@@ -6,6 +6,8 @@ import { formSchema } from '@/components/submit-bookmark/utils'
 import { createBookmark } from '@/lib/db'
 import rateLimit from '@/lib/rate-limit'
 
+export const runtime = 'edge'
+
 const limiter = rateLimit({
   interval: 600 * 1000, // 10 minutes (600 seconds * 1000 ms)
   uniqueTokenPerInterval: 500 // Max 500 IPs

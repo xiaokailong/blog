@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server'
 import { incrementViewCount } from '@/lib/db'
 import { isDevelopment } from '@/lib/utils'
 
+export const runtime = 'edge'
+
 export async function POST(request) {
   if (isDevelopment) return NextResponse.json({ error: 'Not available in development' }, { status: 400 })
 

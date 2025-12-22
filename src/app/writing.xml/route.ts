@@ -3,6 +3,7 @@ import { Feed } from 'feed'
 import { getAllPosts } from '@/lib/contentful'
 import { getSortedPosts } from '@/lib/utils'
 
+export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {

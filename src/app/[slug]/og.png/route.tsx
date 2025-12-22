@@ -5,6 +5,7 @@ import { OpenGraphImage } from '@/components/content/og-image'
 import { getAllPageSlugs, getPageSeo } from '@/lib/contentful'
 import { getBoldFont, getRegularFont } from '@/lib/fonts'
 
+export const runtime = 'edge'
 export const dynamic = 'force-static'
 
 

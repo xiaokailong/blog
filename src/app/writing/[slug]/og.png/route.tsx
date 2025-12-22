@@ -7,6 +7,7 @@ import { getAllPostSlugs, getWritingSeo } from '@/lib/contentful'
 import { getBoldFont, getRegularFont } from '@/lib/fonts'
 import { isDevelopment } from '@/lib/utils'
 
+export const runtime = 'edge'
 export const dynamic = 'force-static'
 
 
