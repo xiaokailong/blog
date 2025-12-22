@@ -8,6 +8,7 @@ import { getPageSeo } from '@/lib/contentful'
 import { getBookmarks } from '@/lib/raindrop'
 import { sortByProperty } from '@/lib/utils'
 
+export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 async function fetchData() {
