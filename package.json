@@ -14,7 +14,13 @@
     "unused": "next-unused",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
-    "outdated": "bun outdated"
+    "outdated": "bun outdated",
+    "db:init": "wrangler d1 execute blog-db --remote --file=./db/schema.sql && wrangler d1 execute blog-db --remote --file=./db/seed.sql",
+    "db:seed": "wrangler d1 execute blog-db --remote --file=./db/seed.sql",
+    "db:clean": "wrangler d1 execute blog-db --remote --file=./db/clean.sql",
+    "db:query": "wrangler d1 execute blog-db --remote --command",
+    "db:console": "wrangler d1 execute blog-db --remote",
+    "db:backup": "wrangler d1 export blog-db --remote --output=./db/backup.sql"
   },
   "engines": {
     "node": "20.x"

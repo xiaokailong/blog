@@ -1,21 +1,6 @@
 import 'server-only'
 
-import { COLLECTION_IDS } from '@/lib/constants'
-
-const options: any = {
-  cache: 'force-cache',
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_RAINDROP_ACCESS_TOKEN}`
-  },
-  next: {
-    revalidate: 60 * 60 * 24 * 2 // 2 days
-  },
-  signal: AbortSignal.timeout(10000) // 10 second timeout to prevent hanging requests
-}
-
-const RAINDROP_API_URL = 'https://api.raindrop.io/rest/v1'
+import { getBookmarkCollections, getBookmarksByCollection } from '@/lib/db'
 
 export const getBookmarkItems = async (id, pageIndex = 0) => {
   if (!id) throw new Error('Bookmark ID is required')
@@ -24,20 +9,12 @@ export const getBookmarkItems = async (id, pageIndex = 0) => {
   }
 
   try {
-    const response = await fetch(
-      `${RAINDROP_API_URL}/raindrops/${id}?` +
-        new URLSearchParams({
-          page: String(pageIndex),
-          perpage: '50'
-        }),
-      options
-    )
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+    const items = await getBookmarksByCollection(id, pageIndex, 50)
+    return {
+      result: true,
+      items: items,
+      count: items.length
     }
-
-    return await response.json()
   } catch (error) {
     console.error(`Failed to fetch bookmark items: ${error.message}`)
     return null
@@ -46,14 +23,11 @@ export const getBookmarkItems = async (id, pageIndex = 0) => {
 
 export const getBookmarks = async () => {
   try {
-    const response = await fetch(`${RAINDROP_API_URL}/collections`, options)
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+    const collections = await getBookmarkCollections()
+    return {
+      result: true,
+      items: collections
     }
-
-    const bookmarks = await response.json()
-    return bookmarks.items.filter((bookmark) => COLLECTION_IDS.includes(bookmark._id))
   } catch (error) {
     console.error(`Failed to fetch bookmarks: ${error.message}`)
     return null
@@ -62,10 +36,19 @@ export const getBookmarks = async () => {
 
 export const getBookmark = async (id) => {
   try {
-    const response = await fetch(`${RAINDROP_API_URL}/collection/${id}`, options)
-    return await response.json()
+    const collections = await getBookmarkCollections()
+    const collection = collections.find((c: any) => c.id === parseInt(id))
+    
+    if (!collection) return null
+    
+    return {
+      result: true,
+      item: collection
+    }
   } catch (error) {
-    console.info(error)
+    console.error(`Failed to fetch bookmark: ${error.message}`)
     return null
+  }
+}
   }
 }

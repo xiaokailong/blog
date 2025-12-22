@@ -37,17 +37,17 @@ export const PROFILES = {
   },
   github: {
     title: 'GitHub',
-    url: 'https://github.com/suyalcinkaya',
+    url: 'https://github.com/xiaokailong',
     icon: <GithubIcon size={16} />
   },
   linkedin: {
     title: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/suyalcinkaya',
+    url: 'https://www.linkedin.com/in/xiaokailong',
     icon: <LinkedinIcon size={16} />
   },
   medium: {
     title: 'Medium',
-    url: 'https://suyalcinkaya.medium.com'
+    url: 'https://xiaokailong.medium.com'
   },
   instagram: {
     title: 'Instagram',

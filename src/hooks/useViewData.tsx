@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { SUPABASE_TABLE_NAME } from '@/lib/constants'
-import supabase from '@/lib/supabase/public'
+import { getAllViewCounts } from '@/lib/db'
 
 export const useViewData = (slug?: any) => {
   const [viewData, setViewData] = useState(null)
@@ -9,48 +8,23 @@ export const useViewData = (slug?: any) => {
   useEffect(() => {
     async function getViewData() {
       try {
-        const supabaseQuery = supabase.from(SUPABASE_TABLE_NAME).select('slug, view_count')
-        if (slug) supabaseQuery.eq('slug', slug)
-        const { data: supabaseData } = await supabaseQuery
-        if (supabaseData) setViewData(supabaseData)
+        const data = await getAllViewCounts()
+        if (slug) {
+          const filtered = data.filter((item: any) => item.slug === slug)
+          setViewData(filtered)
+        } else {
+          setViewData(data)
+        }
       } catch (error) {
-        console.info('Error fetching view data from Supabase:', error)
+        console.info('Error fetching view data:', error)
       }
     }
 
     getViewData()
   }, [slug])
 
-  useEffect(() => {
-    function handleRealtimeChange(payload) {
-      if (payload?.new?.slug) {
-        setViewData((prev) => {
-          if (!prev) return null
-          const index = prev.findIndex((item) => item.slug === payload.new.slug)
-          index !== -1 ? (prev[index] = payload.new) : prev.push(payload.new)
-          return [...prev]
-        })
-      }
-    }
-
-    const channel = supabase
-      .channel('supabase_realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: SUPABASE_TABLE_NAME,
-          ...(slug && { filter: `slug=eq.${slug}` })
-        },
-        handleRealtimeChange
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [slug])
+  // D1数据库不支持实时更新，移除realtime订阅
+  // 可以考虑使用轮询或WebSocket实现
 
   return viewData
 }

@@ -47,12 +47,6 @@ export default async function RootLayout({ children }) {
         </main>
         <TailwindIndicator />
         <SpeedInsights />
-        <Script
-          src="https://unpkg.com/@tinybirdco/flock.js"
-          data-host="https://api.tinybird.co"
-          data-token={process.env.NEXT_PUBLIC_TINYBIRD_TOKEN}
-          strategy="lazyOnload"
-        />
       </body>
     </html>
   )
@@ -69,7 +63,7 @@ export const metadata = {
     template: `%s — ${sharedMetadata.title}`
   },
   description: sharedMetadata.description,
-  keywords: ['Velen Fan Jiahui', 'Velen Suyalcinkaya', 'Velen dev', 'blog.velen.fun'],
+  keywords: ['Velen Fan Jiahui', 'Velen xiaokailong', 'Velen dev', 'blog.velen.fun'],
   openGraph: {
     title: {
       default: sharedMetadata.title,

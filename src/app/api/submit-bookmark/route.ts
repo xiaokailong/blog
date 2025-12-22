@@ -3,6 +3,7 @@ import { isbot } from 'isbot'
 import { NextResponse } from 'next/server'
 
 import { formSchema } from '@/components/submit-bookmark/utils'
+import { createBookmark } from '@/lib/db'
 import rateLimit from '@/lib/rate-limit'
 
 const limiter = rateLimit({
@@ -38,27 +39,17 @@ export async function POST(req) {
   try {
     const { url, email, type } = data.data
 
-    const response = await fetch(
-      `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${process.env.AIRTABLE_BOOKMARKS_TABLE_ID}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.AIRTABLE_PERSONAL_ACCESS_TOKEN}`
-        },
-        body: JSON.stringify({
-          fields: {
-            URL: url,
-            Email: email,
-            Date: new Date().toISOString(),
-            Type: type || 'Other'
-          }
-        })
-      }
-    )
+    const success = await createBookmark({
+      url,
+      email,
+      type: type || 'Other'
+    })
 
-    const res = await response.json()
-    return NextResponse.json({ res })
+    if (success) {
+      return NextResponse.json({ success: true, message: 'Bookmark submitted successfully' })
+    } else {
+      return NextResponse.json({ error: 'Error submitting bookmark.' }, { status: 500 })
+    }
   } catch (error) {
     console.info(error)
     return NextResponse.json({ error: 'Error submitting bookmark.' }, { status: 500 })

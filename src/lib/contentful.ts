@@ -2,29 +2,8 @@ import 'server-only'
 
 import { cache } from 'react'
 
+import { getAllPosts as dbGetAllPosts, getPostBySlug as dbGetPostBySlug, getPostSlugs as dbGetPostSlugs, getJourneyItems as dbGetJourneyItems } from '@/lib/db'
 import { isDevelopment } from '@/lib/utils'
-
-const fetchGraphQL = cache(async (query, preview = isDevelopment) => {
-  try {
-    const res = await fetch(`https://graphql.contentful.com/content/v1/spaces/${process.env.CONTENTFUL_SPACE_ID}`, {
-      cache: 'force-cache',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${
-          preview ? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN : process.env.CONTENTFUL_ACCESS_TOKEN
-        }`
-      },
-      body: JSON.stringify({ query })
-    })
-
-    if (!res.ok) return null
-    return res.json()
-  } catch (error) {
-    console.info(error)
-    return null
-  }
-})
 
 // https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data
 export const preloadGetAllPosts = (preview = isDevelopment) => {
@@ -33,24 +12,16 @@ export const preloadGetAllPosts = (preview = isDevelopment) => {
 
 export const getAllPosts = cache(async (preview = isDevelopment) => {
   try {
-    const entries = await fetchGraphQL(
-      `query {
-        postCollection(preview: ${preview}) {
-          items {
-            title
-            slug
-            date
-            sys {
-              firstPublishedAt
-              publishedAt
-            }
-          }
-        }
-      }`,
-      preview
-    )
-
-    return entries?.data?.postCollection?.items ?? []
+    const posts = await dbGetAllPosts(preview)
+    return posts.map((post: any) => ({
+      title: post.title,
+      slug: post.slug,
+      date: post.date,
+      sys: {
+        firstPublishedAt: post.first_published_at,
+        publishedAt: post.published_at
+      }
+    }))
   } catch (error) {
     console.info(error)
     return []
@@ -59,85 +30,29 @@ export const getAllPosts = cache(async (preview = isDevelopment) => {
 
 export const getPost = cache(async (slug, preview = isDevelopment) => {
   try {
-    const entry = await fetchGraphQL(
-      `query {
-        postCollection(where: { slug: "${slug}" }, preview: ${preview}, limit: 1) {
-          items {
-            title
-            slug
-            date
-            seo {
-              title
-              description
-            }
-            content {
-              json
-              links {
-                assets {
-                  block {
-                    sys {
-                      id
-                    }
-                    url(transform: {
-                      format: AVIF,
-                      quality: 50
-                    })
-                    title
-                    width
-                    height
-                    description
-                    contentfulMetadata {
-                      tags {
-                        name
-                      }
-                    }
-                  }
-                }
-                entries {
-                  inline {
-                    sys {
-                      id
-                    }
-                    __typename
-                    ... on ContentEmbed {
-                      title
-                      embedUrl
-                      type
-                    }
-                    ... on CodeBlock {
-                      title
-                      code
-                    }
-                    ... on Tweet {
-                      id
-                    }
-                    ... on Carousel {
-                      imagesCollection {
-                        items {
-                          title
-                          description
-                          url(transform: {
-                            format: AVIF,
-                            quality: 50
-                          })
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            sys {
-              firstPublishedAt
-              publishedAt
-            }
-          }
-        }
-      }`,
-      preview
-    )
+    const post = await dbGetPostBySlug(slug, preview)
+    if (!post) return null
 
-    return entry?.data?.postCollection?.items?.[0] ?? null
+    return {
+      title: post.title,
+      slug: post.slug,
+      date: post.date,
+      seo: {
+        title: post.title,
+        description: post.excerpt || ''
+      },
+      content: {
+        json: post.content,
+        links: {
+          assets: { block: [] },
+          entries: { inline: [] }
+        }
+      },
+      sys: {
+        firstPublishedAt: post.first_published_at,
+        publishedAt: post.published_at
+      }
+    }
   } catch (error) {
     console.info(error)
     return null
@@ -146,29 +61,23 @@ export const getPost = cache(async (slug, preview = isDevelopment) => {
 
 export const getWritingSeo = cache(async (slug, preview = isDevelopment) => {
   try {
-    const entry = await fetchGraphQL(
-      `query {
-        postCollection(where: { slug: "${slug}" }, preview: ${preview}, limit: 1) {
-          items {
-            date
-            seo {
-              title
-              description
-              ogImageTitle
-              ogImageSubtitle
-              keywords
-            }
-            sys {
-              firstPublishedAt
-              publishedAt
-            }
-          }
-        }
-      }`,
-      preview
-    )
+    const post = await dbGetPostBySlug(slug, preview)
+    if (!post) return null
 
-    return entry?.data?.postCollection?.items?.[0] ?? null
+    return {
+      date: post.date,
+      seo: {
+        title: post.title,
+        description: post.excerpt || '',
+        ogImageTitle: post.title,
+        ogImageSubtitle: post.excerpt || '',
+        keywords: post.tags || []
+      },
+      sys: {
+        firstPublishedAt: post.first_published_at,
+        publishedAt: post.published_at
+      }
+    }
   } catch (error) {
     console.info(error)
     return null
@@ -177,24 +86,16 @@ export const getWritingSeo = cache(async (slug, preview = isDevelopment) => {
 
 export const getPageSeo = cache(async (slug, preview = isDevelopment) => {
   try {
-    const entry = await fetchGraphQL(
-      `query {
-        pageCollection(where: { slug: "${slug}" }, preview: ${preview}, limit: 1) {
-          items {
-            seo {
-              title
-              description
-              ogImageTitle
-              ogImageSubtitle
-              keywords
-            }
-          }
-        }
-      }`,
-      preview
-    )
-
-    return entry?.data?.pageCollection?.items?.[0] ?? null
+    // 页面SEO暂时返回默认值，可以后续扩展
+    return {
+      seo: {
+        title: slug,
+        description: '',
+        ogImageTitle: slug,
+        ogImageSubtitle: '',
+        keywords: []
+      }
+    }
   } catch (error) {
     console.info(error)
     return null
@@ -203,24 +104,8 @@ export const getPageSeo = cache(async (slug, preview = isDevelopment) => {
 
 export const getAllPageSlugs = cache(async (preview = isDevelopment) => {
   try {
-    const entries = await fetchGraphQL(
-      `query {
-        pageCollection(preview: ${preview}) {
-          items {
-            slug
-            hasCustomPage
-            sys {
-              id
-              firstPublishedAt
-              publishedAt
-            }
-          }
-        }
-      }`,
-      preview
-    )
-
-    return entries?.data?.pageCollection?.items ?? []
+    // 页面slug暂时返回空数组，可以后续扩展pages表
+    return []
   } catch (error) {
     console.info(error)
     return []
@@ -229,18 +114,8 @@ export const getAllPageSlugs = cache(async (preview = isDevelopment) => {
 
 export const getAllPostSlugs = cache(async (preview = isDevelopment) => {
   try {
-    const entries = await fetchGraphQL(
-      `query {
-        postCollection(preview: ${preview}) {
-          items {
-            slug
-          }
-        }
-      }`,
-      preview
-    )
-
-    return entries?.data?.postCollection?.items ?? []
+    const slugs = await dbGetPostSlugs()
+    return slugs.map(slug => ({ slug }))
   } catch (error) {
     console.info(error)
     return []
@@ -249,44 +124,8 @@ export const getAllPostSlugs = cache(async (preview = isDevelopment) => {
 
 export const getPage = cache(async (slug, preview = isDevelopment) => {
   try {
-    const entry = await fetchGraphQL(
-      `query {
-        pageCollection(where: { slug: "${slug}" }, preview: ${preview}, limit: 1) {
-          items {
-            title
-            slug
-            content {
-              json
-              links {
-                assets {
-                  block {
-                    sys {
-                      id
-                    }
-                    url(transform: {
-                      format: AVIF,
-                      quality: 50
-                    })
-                    title
-                    width
-                    height
-                    description
-                  }
-                }
-              }
-            }
-            sys {
-              id
-              firstPublishedAt
-              publishedAt
-            }
-          }
-        }
-      }`,
-      preview
-    )
-
-    return entry?.data?.pageCollection?.items?.[0] ?? null
+    // 页面内容暂时返回null，可以后续扩展pages表
+    return null
   } catch (error) {
     console.info(error)
     return null
@@ -295,30 +134,13 @@ export const getPage = cache(async (slug, preview = isDevelopment) => {
 
 export const getAllLogbook = cache(async (preview = isDevelopment) => {
   try {
-    const entries = await fetchGraphQL(
-      `query {
-        logbookCollection(order: date_DESC, preview: ${preview}) {
-          items {
-            title
-            date
-            description
-            image {
-              url(transform: {
-                format: AVIF,
-                quality: 50
-              })
-              title
-              description
-              width
-              height
-            }
-          }
-        }
-      }`,
-      preview
-    )
-
-    return entries?.data?.logbookCollection?.items ?? []
+    const items = await dbGetJourneyItems()
+    return items.map((item: any) => ({
+      title: item.title,
+      date: item.date,
+      description: item.description,
+      image: null // 可以后续添加图片支持
+    }))
   } catch (error) {
     console.info(error)
     return []
