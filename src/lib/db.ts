@@ -191,7 +191,17 @@ export async function getBookmarkCollections() {
     const db = getDB()
     const sql = 'SELECT * FROM bookmark_collections ORDER BY name'
     const result = await d1Helper.query(db, sql)
-    return result.results
+    // Map database fields to expected format
+    return result.results.map((collection: any) => ({
+      id: collection.id,
+      _id: collection.id,
+      title: collection.name,
+      slug: collection.slug,
+      description: collection.description,
+      icon: collection.icon,
+      color: collection.color,
+      count: collection.count || 0
+    }))
   } catch (error) {
     console.error('Error fetching bookmark collections:', error)
     return []
@@ -209,7 +219,27 @@ export async function getBookmarksByCollection(collectionId: number, page = 0, p
       LIMIT ? OFFSET ?
     `
     const result = await d1Helper.query(db, sql, [collectionId, perPage, offset])
-    return result.results
+    // Map database fields to expected format
+    return result.results.map((bookmark: any) => {
+      let domain = ''
+      try {
+        if (bookmark.url) {
+          domain = new URL(bookmark.url).hostname
+        }
+      } catch (e) {
+        // Invalid URL, use empty string
+      }
+      
+      return {
+        _id: bookmark.id,
+        title: bookmark.title,
+        link: bookmark.url,
+        excerpt: bookmark.description,
+        created: bookmark.date,
+        domain: domain,
+        type: bookmark.type
+      }
+    })
   } catch (error) {
     console.error('Error fetching bookmarks:', error)
     return []

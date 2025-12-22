@@ -87,8 +87,12 @@ export interface ContentfulSEO {
 
 export interface RaindropCollection {
   id: number
+  _id: number
   title: string
   slug: string
+  description?: string
+  icon?: string
+  color?: string
   count: number
 }
 
@@ -100,6 +104,7 @@ export interface RaindropItem {
   created: string
   domain: string
   cover?: string
+  type?: string
 }
 
 // ==========================================
