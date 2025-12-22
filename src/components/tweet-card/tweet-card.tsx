@@ -2,8 +2,9 @@ import { Tweet, TweetSkeleton } from 'react-tweet'
 
 import styles from '@/components/tweet-card/tweet-card.module.css'
 import { cn } from '@/lib/utils'
+import type { TweetCardProps } from '@/types'
 
-export const TweetCard = ({ id, className }: any) => {
+export const TweetCard = ({ id, className }: TweetCardProps) => {
   if (!id) return null
 
   return (

@@ -6,8 +6,9 @@ import { usePathname } from 'next/navigation'
 import { memo, useMemo } from 'react'
 
 import { cn } from '@/lib/utils'
+import type { NavigationLinkProps } from '@/types'
 
-export const NavigationLink = memo(({ href, label, icon, shortcutNumber }: any) => {
+export const NavigationLink = memo(({ href, label, icon, shortcutNumber }: NavigationLinkProps) => {
   const pathname = usePathname()
   const iconCmp = useMemo(() => icon ?? <AtSignIcon size={16} />, [icon])
 

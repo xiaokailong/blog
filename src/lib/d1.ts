@@ -52,7 +52,7 @@ async function executeD1RestAPI(sql: string, params: any[] = []) {
 // 统一的D1查询接口
 export const d1Helper = {
   // 执行查询（返回多条记录）
-  async query(db: any, sql: string, params: any[] = []) {
+  async query(db: D1Database | null, sql: string, params: (string | number | boolean | null)[] = []) {
     if (db) {
       // 使用直接的D1连接（Cloudflare环境）
       try {
@@ -72,7 +72,7 @@ export const d1Helper = {
   },
 
   // 执行单条记录查询
-  async queryOne(db: any, sql: string, params: any[] = []) {
+  async queryOne(db: D1Database | null, sql: string, params: (string | number | boolean | null)[] = []) {
     if (db) {
       try {
         const stmt = db.prepare(sql)
@@ -91,7 +91,7 @@ export const d1Helper = {
   },
 
   // 执行插入/更新/删除
-  async execute(db: any, sql: string, params: any[] = []) {
+  async execute(db: D1Database | null, sql: string, params: (string | number | boolean | null)[] = []) {
     if (db) {
       try {
         const stmt = db.prepare(sql)
@@ -109,7 +109,7 @@ export const d1Helper = {
   },
 
   // 批量执行
-  async batch(db: any, statements: Array<{ sql: string; params?: any[] }>) {
+  async batch(db: D1Database | null, statements: Array<{ sql: string; params?: (string | number | boolean | null)[] }>) {
     if (db) {
       try {
         const stmts = statements.map(({ sql, params = [] }) => {

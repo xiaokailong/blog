@@ -19,13 +19,14 @@ const SubmitBookmarkDrawer = dynamic(
   }
 )
 import { MOBILE_SCROLL_THRESHOLD, SCROLL_AREA_ID } from '@/lib/constants'
+import type { RaindropCollection } from '@/types'
 
 export const FloatingHeader = memo(({ scrollTitle, title, goBackLink, bookmarks, currentBookmark, children }: { 
   scrollTitle?: string; 
   title?: string; 
   goBackLink?: string; 
-  bookmarks?: any[]; 
-  currentBookmark?: any; 
+  bookmarks?: RaindropCollection[]; 
+  currentBookmark?: RaindropCollection; 
   children?: React.ReactNode 
 }) => {
   const [transformValues, setTransformValues] = useState({ translateY: 0, opacity: scrollTitle ? 0 : 1 })

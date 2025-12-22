@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import type { ViewCount } from '@/types'
 
-export const useViewData = (slug?: any) => {
+export const useViewData = (slug?: string) => {
   const [viewData, setViewData] = useState(null)
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export const useViewData = (slug?: any) => {
         
         const data = await response.json()
         if (slug) {
-          const filtered = data.filter((item: any) => item.slug === slug)
+          const filtered = data.filter((item: ViewCount) => item.slug === slug)
           setViewData(filtered)
         } else {
           setViewData(data)

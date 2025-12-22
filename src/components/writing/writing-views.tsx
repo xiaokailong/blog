@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { useViewData } from '@/hooks/useViewData'
 import { viewCountFormatter } from '@/lib/utils'
 
-export const WritingViews = ({ slug }: any) => {
+export const WritingViews = ({ slug }: { slug: string }) => {
   const viewData = useViewData(slug)
   const { view_count } = viewData?.[0] ?? {}
 

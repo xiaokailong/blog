@@ -4,6 +4,7 @@ import { cache } from 'react'
 
 import { getAllPosts as dbGetAllPosts, getPostBySlug as dbGetPostBySlug, getPostSlugs as dbGetPostSlugs, getJourneyItems as dbGetJourneyItems } from '@/lib/db'
 import { isDevelopment } from '@/lib/utils'
+import type { Post } from '@/types'
 
 // https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#preloading-data
 export const preloadGetAllPosts = (preview = isDevelopment) => {
@@ -13,13 +14,16 @@ export const preloadGetAllPosts = (preview = isDevelopment) => {
 export const getAllPosts = cache(async (preview = isDevelopment) => {
   try {
     const posts = await dbGetAllPosts(preview)
-    return posts.map((post: any) => ({
+    return posts.map((post: Post) => ({
       title: post.title,
       slug: post.slug,
       date: post.date,
+      excerpt: post.excerpt,
+      tags: typeof post.tags === 'string' ? JSON.parse(post.tags) : post.tags,
+      content: typeof post.content === 'string' ? JSON.parse(post.content) : post.content,
       sys: {
-        firstPublishedAt: post.first_published_at,
-        publishedAt: post.published_at
+        firstPublishedAt: post.created_at,
+        publishedAt: post.updated_at
       }
     }))
   } catch (error) {

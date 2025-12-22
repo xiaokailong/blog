@@ -138,8 +138,9 @@ function options(links) {
     }
   }
 }
+import type { RichTextProps } from '@/types'
 
-export const RichText = ({ content }: any) => {
+export const RichText = ({ content }: RichTextProps) => {
   if (!content) return null
   return documentToReactComponents(content.json, options(content.links))
 }

@@ -6,8 +6,9 @@ import { useMemo } from 'react'
 
 import { useViewData } from '@/hooks/useViewData'
 import { cn, dateWithDayAndMonthFormatter, dateWithMonthAndYearFormatter, viewCountFormatter } from '@/lib/utils'
+import type { WritingListProps } from '@/types'
 
-export const WritingList = ({ items }: any) => {
+export const WritingList = ({ items }: WritingListProps) => {
   const viewData = useViewData()
 
   // Preprocess viewData into a map for efficient lookups

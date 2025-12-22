@@ -6,8 +6,9 @@ import { useMemo } from 'react'
 import { WritingLink } from '@/components/writing/writing-link'
 import { useViewData } from '@/hooks/useViewData'
 import { cn } from '@/lib/utils'
+import type { ContentfulPost } from '@/types'
 
-export const WritingListLayout = ({ list, isMobile }: any) => {
+export const WritingListLayout = ({ list, isMobile }: { list: ContentfulPost[], isMobile?: boolean }) => {
   const viewData = useViewData()
   const pathname = usePathname()
 

@@ -1,9 +1,10 @@
 import 'server-only'
 
-import { d1Helper, getD1FromEnv } from './d1'
+import { d1Helper, getD1FromEnv, D1Database } from './d1'
+import type { Post } from '@/types'
 
 // 全局D1实例缓存
-let cachedDb: any = null
+let cachedDb: D1Database | null = null
 
 // 获取D1数据库实例
 export function getDB() {
@@ -13,7 +14,7 @@ export function getDB() {
   // 尝试从不同的环境获取D1实例
   // 1. Cloudflare Pages Functions环境
   if (typeof process !== 'undefined' && (process as any).env?.DB) {
-    cachedDb = (process as any).env.DB
+    cachedDb = (process as any).env.DB as D1Database
     return cachedDb
   }
   
@@ -49,10 +50,10 @@ export async function getAllPosts(preview = false) {
       : 'SELECT * FROM posts WHERE is_draft = 0 ORDER BY date DESC'
 
     const result = await d1Helper.query(db, sql)
-    return result.results.map((post: any) => ({
+    return result.results.map((post: Post) => ({
       ...post,
-      tags: post.tags ? JSON.parse(post.tags) : [],
-      content: post.content ? JSON.parse(post.content) : null
+      tags: typeof post.tags === 'string' ? JSON.parse(post.tags) : post.tags,
+      content: typeof post.content === 'string' ? JSON.parse(post.content) : post.content
     }))
   } catch (error) {
     console.error('Error fetching posts:', error)
@@ -86,7 +87,7 @@ export async function getPostSlugs() {
     const db = getDB()
     const sql = 'SELECT slug FROM posts WHERE is_draft = 0'
     const result = await d1Helper.query(db, sql)
-    return result.results.map((row: any) => row.slug)
+    return result.results.map((row: { slug: string }) => row.slug)
   } catch (error) {
     console.error('Error fetching post slugs:', error)
     return []
@@ -96,7 +97,7 @@ export async function getPostSlugs() {
 export async function createPost(data: {
   title: string
   slug: string
-  content: any
+  content: any // Contentful Rich Text JSON
   excerpt?: string
   date: string
   tags?: string[]
@@ -140,7 +141,7 @@ export async function updatePost(slug: string, data: Partial<{
   try {
     const db = getDB()
     const updates: string[] = []
-    const params: any[] = []
+    const params: (string | number | boolean | null)[] = []
 
     if (data.title !== undefined) {
       updates.push('title = ?')

@@ -38,7 +38,7 @@ export const MenuContent = () => (
     <div className="flex flex-col gap-2 text-sm">
       <span className="px-2 text-xs leading-relaxed font-medium text-gray-600">Online</span>
       <div className="flex flex-col gap-1">
-        {Object.values(PROFILES).map((profile: any) => (
+        {Object.values(PROFILES).map((profile: { url: string; title: string; icon: React.ReactNode }) => (
           <NavigationLink key={profile.url} href={profile.url} label={profile.title} icon={profile.icon} />
         ))}
       </div>

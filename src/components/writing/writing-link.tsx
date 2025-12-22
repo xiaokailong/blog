@@ -2,8 +2,9 @@ import { domAnimation, LazyMotion, m } from 'framer-motion'
 import Link from 'next/link'
 
 import { cn, getDateTimeFormat, viewCountFormatter } from '@/lib/utils'
+import type { WritingLinkProps } from '@/types'
 
-export const WritingLink = ({ post, viewCount, isMobile, isActive }: any) => {
+export const WritingLink = ({ post, viewCount, isMobile, isActive }: WritingLinkProps) => {
   const date = post.date || post.sys.firstPublishedAt
   const formattedDate = getDateTimeFormat(date)
   const formattedViewCount = viewCount ? viewCountFormatter.format(viewCount) : null

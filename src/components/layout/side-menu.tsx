@@ -8,6 +8,7 @@ import { useMemo } from 'react'
 import { LoadingSpinner } from '@/components/common/loading-spinner'
 import { ScrollArea } from '@/components/layout/scroll-area'
 import { Button } from '@/components/ui/button'
+import type { SideMenuProps } from '@/types'
 
 const SubmitBookmarkDialog = dynamic(
   () => import('@/components/submit-bookmark/dialog').then((mod) => mod.SubmitBookmarkDialog),
@@ -29,7 +30,7 @@ const keyCodePathnameMapping = {
   Digit6: '/bookmarks'
 }
 
-export const SideMenu = ({ children, title, bookmarks = [], isInner }: any) => {
+export const SideMenu = ({ children, title, bookmarks = [], isInner }: SideMenuProps) => {
   const router = useRouter()
   const pathname = usePathname()
   useKeyPress(onKeyPress, Object.keys(keyCodePathnameMapping))

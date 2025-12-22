@@ -37,7 +37,7 @@ export const getBookmarks = async () => {
 export const getBookmark = async (id) => {
   try {
     const collections = await getBookmarkCollections()
-    const collection = collections.find((c: any) => c.id === parseInt(id))
+    const collection = collections.find((c: { id: number }) => c.id === parseInt(id))
     
     if (!collection) return null
     
