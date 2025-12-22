@@ -50,5 +50,3 @@ export const getBookmark = async (id) => {
     return null
   }
 }
-  }
-}

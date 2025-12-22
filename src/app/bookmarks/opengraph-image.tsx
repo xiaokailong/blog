@@ -18,7 +18,7 @@ export default async function Image() {
     getRegularFont(),
     getBoldFont()
   ])
-  const { seo = {} } = seoData || {}
+  const { seo = {} } = (seoData || {}) as any
   const { title = 'Bookmarks', description = '', ogImageTitle, ogImageSubtitle } = seo
 
   return new ImageResponse(

@@ -8,8 +8,11 @@ import { getPageSeo } from '@/lib/contentful'
 import { getBookmarks } from '@/lib/raindrop'
 import { sortByProperty } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 async function fetchData() {
-  const bookmarks = await getBookmarks()
+  const bookmarksResult = await getBookmarks()
+  const bookmarks = bookmarksResult?.items || []
   const sortedBookmarks = sortByProperty(bookmarks, 'title')
   return { bookmarks: sortedBookmarks }
 }
@@ -24,7 +27,7 @@ export default async function Writing() {
         {bookmarks?.map((bookmark) => {
           return (
             <Link
-              key={bookmark._id}
+              key={bookmark.id}
               href={`/bookmarks/${bookmark.slug}`}
               className="flex flex-col gap-1 border-b px-4 py-3 text-sm hover:bg-gray-100"
             >

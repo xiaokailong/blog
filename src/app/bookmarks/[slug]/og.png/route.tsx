@@ -10,19 +10,21 @@ export const dynamic = 'force-dynamic'
 
 
 export async function generateStaticParams() {
-  const bookmarks = await getBookmarks()
-  if (!bookmarks) return []
-  return bookmarks.map((bookmark) => ({ slug: bookmark.slug }))
+  const bookmarksResult = await getBookmarks()
+  if (!bookmarksResult || !bookmarksResult.items) return []
+  return bookmarksResult.items.map((bookmark) => ({ slug: bookmark.slug }))
 }
 
 export async function GET(_, props) {
   const params = await props.params
   const { slug } = params
-  const [bookmarks, regularFontData, boldFontData] = await Promise.all([
+  const [bookmarksResult, regularFontData, boldFontData] = await Promise.all([
     getBookmarks(),
     getRegularFont(),
     getBoldFont()
   ])
+  
+  const bookmarks = bookmarksResult?.items || []
   const currentBookmark = bookmarks.find((bookmark) => bookmark.slug === slug)
   if (!currentBookmark) {
     return new Response('Not Found', { status: 404 })

@@ -3,7 +3,7 @@ import { getBookmarks } from '@/lib/raindrop'
 import { getSortedPosts } from '@/lib/utils'
 
 export default async function sitemap() {
-  const [allPosts, bookmarks, allPages] = await Promise.all([getAllPosts(), getBookmarks(), getAllPageSlugs()])
+  const [allPosts, bookmarksResult, allPages] = await Promise.all([getAllPosts(), getBookmarks(), getAllPageSlugs()])
 
   const sortedWritings = getSortedPosts(allPosts || [])
   const writings = sortedWritings.map((post) => {
@@ -15,7 +15,8 @@ export default async function sitemap() {
     }
   })
 
-  const mappedBookmarks = (bookmarks || []).map((bookmark) => {
+  const bookmarks = bookmarksResult?.items || []
+  const mappedBookmarks = bookmarks.map((bookmark) => {
     return {
       url: `https://blog.velen.fun/bookmarks/${bookmark.slug}`,
       lastModified: new Date(),

@@ -12,18 +12,19 @@ import { sortByProperty } from '@/lib/utils'
 export const dynamic = 'force-dynamic'
 
 export async function generateStaticParams() {
-  const bookmarks = await getBookmarks()
-  if (!bookmarks) return []
-  return bookmarks.map((bookmark) => ({ slug: bookmark.slug }))
+  const bookmarksResult = await getBookmarks()
+  if (!bookmarksResult || !bookmarksResult.items) return []
+  return bookmarksResult.items.map((bookmark) => ({ slug: bookmark.slug }))
 }
 
 async function fetchData(slug) {
-  const bookmarks = await getBookmarks()
+  const bookmarksResult = await getBookmarks()
+  const bookmarks = bookmarksResult?.items || []
   const currentBookmark = bookmarks.find((bookmark) => bookmark.slug === slug)
   if (!currentBookmark) notFound()
 
   const sortedBookmarks = sortByProperty(bookmarks, 'title')
-  const bookmarkItems = await getBookmarkItems(currentBookmark._id)
+  const bookmarkItems = await getBookmarkItems(currentBookmark.id)
 
   return {
     bookmarks: sortedBookmarks,
@@ -60,7 +61,8 @@ export default async function CollectionPage(props) {
 export async function generateMetadata(props) {
   const params = await props.params
   const { slug } = params
-  const bookmarks = await getBookmarks()
+  const bookmarksResult = await getBookmarks()
+  const bookmarks = bookmarksResult?.items || []
   const currentBookmark = bookmarks.find((bookmark) => bookmark.slug === slug)
   if (!currentBookmark) return null
 

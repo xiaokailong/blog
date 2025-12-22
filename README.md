@@ -24,16 +24,41 @@
 
 ## 🚀 Quick Start
 
+### Prerequisites
+
+Before running locally, you need to configure Cloudflare credentials:
+
+1. **Get Cloudflare Account ID**:
+   - Visit https://dash.cloudflare.com/
+   - Click your profile > Account Home
+   - Copy your Account ID
+
+2. **Create API Token**:
+   - Visit https://dash.cloudflare.com/profile/api-tokens
+   - Create token with D1 permissions (Read + Edit)
+
+3. **Configure Environment**:
+   ```bash
+   # Copy example env file
+   cp .env.example .env.local
+   
+   # Edit .env.local and fill in:
+   CLOUDFLARE_ACCOUNT_ID=your_account_id_here
+   CLOUDFLARE_API_TOKEN=your_api_token_here
+   ```
+
+📖 **Need help?** See [docs/ENV_SETUP.md](docs/ENV_SETUP.md) for detailed instructions.
+
 ### Running Locally
 
 ```bash
 # Clone and install
 git clone https://github.com/xiaokailong/blog.git
 cd blog
-bun install
+npm install
 
 # Start development server
-bun dev
+npm run dev
 ```
 
 Visit http://localhost:3000

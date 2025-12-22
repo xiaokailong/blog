@@ -27,7 +27,7 @@ export async function GET(_, props) {
     getRegularFont(),
     getBoldFont()
   ])
-  const { seo: { title, description, ogImageTitle, ogImageSubtitle } = {} } = seoData
+  const { seo: { title, description, ogImageTitle, ogImageSubtitle } = {} } = seoData as any
 
   let icon = null
   switch (slug) {

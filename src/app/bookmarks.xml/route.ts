@@ -5,10 +5,12 @@ import { getBookmarkItems, getBookmarks } from '@/lib/raindrop'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const bookmarks = await getBookmarks()
-  if (!bookmarks) {
+  const bookmarksResult = await getBookmarks()
+  if (!bookmarksResult || !bookmarksResult.items) {
     return new Response('Bookmarks not available', { status: 503 })
   }
+  
+  const bookmarks = bookmarksResult.items
   const date = new Date()
   const siteURL = 'https://blog.velen.fun'
   const author = {
@@ -31,20 +33,20 @@ export async function GET() {
 
   const bookmarkList = []
   for (const bookmark of bookmarks) {
-    const bookmarkItems = await getBookmarkItems(bookmark._id)
+    const bookmarkItems = await getBookmarkItems(bookmark.id)
     const { items = [] } = bookmarkItems ?? {}
 
     items?.slice(0, 10).forEach((bookmark) => {
       bookmarkList.push({
-        id: bookmark._id,
-        guid: bookmark._id,
+        id: bookmark.id,
+        guid: bookmark.id,
         title: bookmark.title,
-        link: bookmark.link,
-        description: bookmark.excerpt,
-        content: bookmark.excerpt,
-        image: bookmark.cover,
-        date: new Date(bookmark.created),
-        updated: new Date(bookmark.lastUpdate),
+        link: bookmark.url,
+        description: bookmark.description,
+        content: bookmark.description,
+        image: bookmark.image,
+        date: new Date(bookmark.created_at),
+        updated: new Date(bookmark.updated_at),
         author: [author],
         contributor: [author]
       })

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+'use client'
 
-import { getAllViewCounts } from '@/lib/db'
+import { useEffect, useState } from 'react'
 
 export const useViewData = (slug?: any) => {
   const [viewData, setViewData] = useState(null)
@@ -8,7 +8,11 @@ export const useViewData = (slug?: any) => {
   useEffect(() => {
     async function getViewData() {
       try {
-        const data = await getAllViewCounts()
+        // 使用API路由获取浏览量数据
+        const response = await fetch('/api/view-counts')
+        if (!response.ok) throw new Error('Failed to fetch view data')
+        
+        const data = await response.json()
         if (slug) {
           const filtered = data.filter((item: any) => item.slug === slug)
           setViewData(filtered)
