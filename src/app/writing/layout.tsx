@@ -1,26 +1,11 @@
-import { Suspense } from 'react'
-
-import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { SideMenu } from '@/components/layout/side-menu'
-import { WritingListLayout } from '@/components/writing/writing-list-layout'
-import { getAllPosts } from '@/lib/contentful'
-import { getSortedPosts } from '@/lib/utils'
+import { WritingLayoutClient } from '@/components/writing/writing-layout-client'
 
-async function fetchData() {
-  const allPosts = await getAllPosts()
-  const sortedPosts = getSortedPosts(allPosts)
-  return { sortedPosts }
-}
-
-export default async function WritingLayout({ children }) {
-  const { sortedPosts } = await fetchData()
-
+export default function WritingLayout({ children }) {
   return (
     <>
       <SideMenu title="Writing" isInner>
-        <Suspense fallback={<ScreenLoadingSpinner />}>
-          <WritingListLayout list={sortedPosts} />
-        </Suspense>
+        <WritingLayoutClient />
       </SideMenu>
       <div className="lg:bg-dots flex-1">{children}</div>
     </>

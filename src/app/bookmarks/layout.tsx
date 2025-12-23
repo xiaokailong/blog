@@ -1,39 +1,44 @@
-import { Suspense } from 'react'
+'use client'
 
-import { ListItem } from '@/components/content/list-item'
-import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
+import { useEffect, useState } from 'react'
 import { SideMenu } from '@/components/layout/side-menu'
 import { Toaster } from '@/components/ui/sonner'
-import { getBookmarks } from '@/lib/raindrop'
-import { sortByProperty } from '@/lib/utils'
+import { BookmarksLayoutClient } from '@/components/bookmarks/bookmarks-layout-client'
 
-async function fetchData() {
-  const bookmarks = await getBookmarks()
-  const sortedBookmarks = sortByProperty(bookmarks, 'title')
-  return { bookmarks: sortedBookmarks }
+interface BookmarkCollection {
+  id: number
+  _id: number
+  title: string
+  slug: string
+  description: string
+  count: number
 }
 
-export default async function BookmarksLayout({ children }) {
-  const { bookmarks } = await fetchData()
+export default function BookmarksLayout({ children }) {
+  const [bookmarks, setBookmarks] = useState<BookmarkCollection[]>([])
+
+  useEffect(() => {
+    async function fetchBookmarks() {
+      try {
+        const response = await fetch('/api/bookmarks')
+        const data = await response.json()
+        
+        if (data.success) {
+          setBookmarks(data.data || [])
+        }
+      } catch (err) {
+        console.error('Failed to fetch bookmarks:', err)
+      }
+    }
+
+    fetchBookmarks()
+  }, [])
 
   return (
     <>
       <div className="flex w-full">
         <SideMenu title="Bookmarks" bookmarks={bookmarks} isInner>
-          <Suspense fallback={<ScreenLoadingSpinner />}>
-            <div className="flex flex-col gap-1 text-sm">
-              {bookmarks?.map((bookmark) => {
-                return (
-                  <ListItem
-                    key={bookmark._id}
-                    path={`/bookmarks/${bookmark.slug}`}
-                    title={bookmark.title}
-                    description={`${bookmark.count} bookmarks`}
-                  />
-                )
-              })}
-            </div>
-          </Suspense>
+          <BookmarksLayoutClient bookmarks={bookmarks} />
         </SideMenu>
         <div className="lg:bg-grid flex-1">{children}</div>
       </div>
@@ -45,9 +50,4 @@ export default async function BookmarksLayout({ children }) {
       />
     </>
   )
-}
-
-export const viewport = {
-  //  To fix the zoom issue on mobile for the bookmark submit form
-  maximumScale: 1
 }
