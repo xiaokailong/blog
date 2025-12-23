@@ -1,25 +1,12 @@
 import Link from 'next/link'
-import { Suspense } from 'react'
 
 import { FloatingHeader } from '@/components/layout/floating-header'
 import { PageTitle } from '@/components/content/page-title'
-import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { ScrollArea } from '@/components/layout/scroll-area'
 import { Button } from '@/components/ui/button'
-import { WritingList } from '@/components/writing/writing-list'
-import { getAllPosts } from '@/lib/contentful'
-import { getItemsByYear, getSortedPosts } from '@/lib/utils'
+import { HomeWritingListClient } from '@/components/writing/home-writing-list-client'
 
-async function fetchData() {
-  const allPosts = await getAllPosts()
-  const sortedPosts = getSortedPosts(allPosts)
-  const items = getItemsByYear(sortedPosts)
-  return { items }
-}
-
-export default async function Home() {
-  const { items } = await fetchData()
-
+export default function Home() {
   return (
     <ScrollArea useScrollAreaId>
       <FloatingHeader scrollTitle="Velen Fan Jiahui" />
@@ -39,9 +26,7 @@ export default async function Home() {
               <h2 className="mt-8 mb-4">Writing</h2>
             </Link>
           </Button>
-          <Suspense fallback={<ScreenLoadingSpinner />}>
-            <WritingList items={items} header="Writing" />
-          </Suspense>
+          <HomeWritingListClient />
         </div>
       </div>
     </ScrollArea>

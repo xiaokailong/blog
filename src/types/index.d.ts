@@ -137,13 +137,13 @@ export interface BookmarkCardProps {
 export interface JourneyCardProps {
   title: string
   description: string
-  image: {
+  image?: {
     url: string
     title?: string
     description?: string
     width?: number
     height?: number
-  } | string
+  } | string | null
   index: number
 }
 

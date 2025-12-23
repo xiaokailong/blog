@@ -1,87 +1,14 @@
-import { draftMode } from 'next/headers'
-import { notFound } from 'next/navigation'
-
-import { ClientOnly } from '@/components/common/client-only'
-import { RichText } from '@/components/contentful/rich-text'
-import { FloatingHeader } from '@/components/layout/floating-header'
-import { PageTitle } from '@/components/content/page-title'
-import { ScrollArea } from '@/components/layout/scroll-area'
-import { WritingViews } from '@/components/writing/writing-views'
-import { getAllPostSlugs, getPost, getWritingSeo } from '@/lib/contentful'
+import { WritingDetailClient } from '@/components/writing/writing-detail-client'
+import { getWritingSeo } from '@/lib/contentful'
 
 export const runtime = 'edge'
-import { getDateTimeFormat, isDevelopment } from '@/lib/utils'
-
 export const dynamic = 'force-dynamic'
-
-async function fetchData(slug) {
-  const { isEnabled } = await draftMode()
-  const data = await getPost(slug, isDevelopment ? true : isEnabled)
-  if (!data) notFound()
-
-  return {
-    data
-  }
-}
 
 export default async function WritingSlug(props) {
   const params = await props.params
   const { slug } = params
-  const { data } = await fetchData(slug)
 
-  const {
-    title,
-    date,
-    seo: { title: seoTitle, description: seoDescription },
-    content,
-    sys: { firstPublishedAt, publishedAt: updatedAt }
-  } = data
-
-  const postDate = date || firstPublishedAt
-  const dateString = getDateTimeFormat(postDate)
-  const datePublished = new Date(postDate).toISOString()
-  const dateModified = new Date(updatedAt).toISOString()
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: seoTitle,
-    description: seoDescription,
-    datePublished,
-    dateModified,
-    author: {
-      '@type': 'Person',
-      name: 'Velen Fan Jiahui'
-    },
-    url: `https://blog.velen.fun/writing/${slug}`
-  }
-
-  return (
-    <>
-      <ScrollArea className="bg-white" useScrollAreaId>
-        <FloatingHeader scrollTitle={title} goBackLink="/writing">
-          <WritingViews slug={slug} />
-        </FloatingHeader>
-        <div className="content-wrapper @container/writing">
-          <article className="content">
-            <PageTitle
-              title={title}
-              subtitle={
-                <time dateTime={postDate} className="text-gray-400">
-                  {dateString}
-                </time>
-              }
-              className="mb-6 flex flex-col gap-3"
-            />
-            <RichText content={content} />
-          </article>
-        </div>
-      </ScrollArea>
-      <ClientOnly>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd, null, 2) }} />
-      </ClientOnly>
-    </>
-  )
+  return <WritingDetailClient slug={slug} />
 }
 
 export async function generateMetadata(props) {
