@@ -93,3 +93,19 @@ CREATE TABLE IF NOT EXISTS journey_items (
 
 CREATE INDEX IF NOT EXISTS idx_journey_year ON journey_items(year DESC);
 CREATE INDEX IF NOT EXISTS idx_journey_date ON journey_items(date DESC);
+
+-- ==========================================
+-- Table: page_views (页面访问记录)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS page_views (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip_address TEXT NOT NULL,
+  page TEXT NOT NULL,
+  visited_at TEXT DEFAULT (datetime('now')),
+  created_at TEXT DEFAULT (datetime('now')),
+  UNIQUE(ip_address, page) -- 每个IP每个页面只记录一次
+);
+
+CREATE INDEX IF NOT EXISTS idx_page_views_ip ON page_views(ip_address);
+CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page);
+CREATE INDEX IF NOT EXISTS idx_page_views_visited_at ON page_views(visited_at DESC);

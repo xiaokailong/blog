@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/layout/scroll-area'
 import { WritingViews } from '@/components/writing/writing-views'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { getDateTimeFormat } from '@/lib/utils'
+import { API_BASE_URL } from '@/lib/constants'
 
 interface PostData {
   title: string
@@ -33,7 +34,7 @@ export function WritingDetailClient({ slug }: { slug: string }) {
   useEffect(() => {
     async function fetchPost() {
       try {
-        const response = await fetch(`/api/posts/${slug}`)
+        const response = await fetch(`${API_BASE_URL}/api/posts/${slug}`)
         const data = await response.json()
         
         if (data.success) {
@@ -46,7 +47,7 @@ export function WritingDetailClient({ slug }: { slug: string }) {
         }
       } catch (err) {
         setError('Failed to fetch post')
-        console.error(err)
+        console.error('Error fetching post:', err)
       } finally {
         setLoading(false)
       }

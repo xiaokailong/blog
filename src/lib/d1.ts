@@ -13,40 +13,51 @@ export function getD1FromEnv(env?: any) {
   return null
 }
 
-// Cloudflare D1 REST API访问（用于本地开发和非Cloudflare环境）
+// Cloudflare D1 REST API访问（用于生产环境）
 async function executeD1RestAPI(sql: string, params: any[] = []) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
   const databaseId = process.env.CLOUDFLARE_D1_DATABASE_ID || '3dd242d5-f86b-4acb-83e8-04945a47a525'
   const apiToken = process.env.CLOUDFLARE_API_TOKEN
 
   if (!accountId || !apiToken) {
-    console.warn('Missing Cloudflare credentials. Please set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN')
-    // 在构建时返回空结果而不是抛出错误
-    return { results: [], success: true, meta: { duration: 0 } }
+    console.warn('Missing Cloudflare credentials')
+    // 返回空结果
+    return { results: [], success: false, meta: { duration: 0 } }
   }
 
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sql,
-        params
-      })
+  try {
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sql,
+          params
+        })
+      }
+    )
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('D1 API Error:', error)
+      throw new Error(`D1 API Error: ${error}`)
     }
-  )
 
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`D1 API Error: ${error}`)
+    const result = await response.json()
+    
+    if (!result.success) {
+      console.error('D1 API returned error:', result.errors)
+    }
+    
+    return result.result?.[0] || { results: [], success: true }
+  } catch (error) {
+    console.error('Error calling D1 REST API:', error)
+    return { results: [], success: false, meta: { duration: 0 } }
   }
-
-  const result = await response.json()
-  return result.result?.[0] || { results: [], success: true }
 }
 
 // 统一的D1查询接口

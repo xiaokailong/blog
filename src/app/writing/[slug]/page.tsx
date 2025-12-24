@@ -1,5 +1,4 @@
 import { WritingDetailClient } from '@/components/writing/writing-detail-client'
-import { getWritingSeo } from '@/lib/contentful'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
@@ -14,32 +13,19 @@ export default async function WritingSlug(props) {
 export async function generateMetadata(props) {
   const params = await props.params
   const { slug } = params
-  const seoData = await getWritingSeo(slug)
-  if (!seoData) return null
-
-  const {
-    date,
-    seo: { title, description, keywords },
-    sys: { firstPublishedAt, publishedAt: updatedAt }
-  } = seoData
-
+  
+  // Simple metadata without fetching from DB
   const siteUrl = `/writing/${slug}`
-  const postDate = date || firstPublishedAt
-  const publishedTime = new Date(postDate).toISOString()
-  const modifiedTime = new Date(updatedAt).toISOString()
+  const seoTitle = `Writing`
+  const seoDescription = `Blog post by Velen Fan Jiahui`
 
   return {
-    title,
-    description,
-    keywords,
+    title: seoTitle,
+    description: seoDescription,
     openGraph: {
-      title,
-      description,
+      title: seoTitle,
+      description: seoDescription,
       type: 'article',
-      publishedTime,
-      ...(updatedAt && {
-        modifiedTime
-      }),
       url: siteUrl,
       images: siteUrl + '/og.png'
     },

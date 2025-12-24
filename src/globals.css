@@ -3,6 +3,9 @@
 @plugin '@tailwindcss/container-queries';
 @plugin 'tailwindcss-animate';
 
+/* 导入自定义样式 */
+@import './styles/custom.css';
+
 @theme static {
   --sh-identifier: #171717;
   --sh-sign: #8996a3;
