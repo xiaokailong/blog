@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { API_BASE_URL } from '@/lib/constants'
 import type { ViewCount } from '@/types'
 
 export const useViewData = (slug?: string) => {

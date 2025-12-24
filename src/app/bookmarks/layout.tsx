@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { SideMenu } from '@/components/layout/side-menu'
 import { Toaster } from '@/components/ui/sonner'
 import { BookmarksLayoutClient } from '@/components/bookmarks/bookmarks-layout-client'
+import { API_BASE_URL } from '@/lib/constants'
 
 interface BookmarkCollection {
   id: number
@@ -20,7 +21,7 @@ export default function BookmarksLayout({ children }) {
   useEffect(() => {
     async function fetchBookmarks() {
       try {
-        const response = await fetch('/api/bookmarks')
+        const response = await fetch(`${API_BASE_URL}/api/bookmarks`)
         const data = await response.json()
         
         if (data.success) {

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { formSchema } from '@/components/submit-bookmark/utils'
+import { API_BASE_URL } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -35,7 +36,7 @@ export const SubmitBookmarkForm = memo(({ className, setFormOpen, bookmarks, cur
   const onSubmit = useCallback(
     async (values) => {
       try {
-        const response = await fetch('/api/submit-bookmark', {
+        const response = await fetch(`${API_BASE_URL}/api/submit-bookmark`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

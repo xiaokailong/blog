@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { WritingList } from '@/components/writing/writing-list'
 import type { ContentfulPost } from '@/types'
+import { API_BASE_URL } from '@/lib/constants'
 
 export function HomeWritingListClient() {
   const [items, setItems] = useState<[string, ContentfulPost[]][]>([])
@@ -12,7 +13,7 @@ export function HomeWritingListClient() {
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const response = await fetch('/api/posts')
+        const response = await fetch(`${API_BASE_URL}/api/posts`)
         const data = await response.json()
         
         if (data.success) {

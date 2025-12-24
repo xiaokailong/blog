@@ -7,6 +7,7 @@ import { FloatingHeader } from '@/components/layout/floating-header'
 import { PageTitle } from '@/components/content/page-title'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { ScrollArea } from '@/components/layout/scroll-area'
+import { API_BASE_URL } from '@/lib/constants'
 
 interface BookmarkCollection {
   id: number
@@ -43,7 +44,7 @@ export function BookmarkDetailClient({ slug }: BookmarkDetailClientProps) {
     async function fetchData() {
       try {
         // Fetch all collections
-        const collectionsResponse = await fetch('/api/bookmarks')
+        const collectionsResponse = await fetch(`${API_BASE_URL}/api/bookmarks`)
         const collectionsData = await collectionsResponse.json()
         
         if (!collectionsData.success) {
@@ -64,7 +65,7 @@ export function BookmarkDetailClient({ slug }: BookmarkDetailClientProps) {
         setCurrentBookmark(current)
 
         // Fetch items for this collection
-        const itemsResponse = await fetch(`/api/bookmarks/${current.id}`)
+        const itemsResponse = await fetch(`${API_BASE_URL}/api/bookmarks/${current.id}`)
         const itemsData = await itemsResponse.json()
         
         if (itemsData.success) {
@@ -104,7 +105,7 @@ export function BookmarkDetailClient({ slug }: BookmarkDetailClientProps) {
       <div className="content-wrapper">
         <div className="content @container">
           <PageTitle title={currentBookmark.title} />
-          <BookmarkList id={currentBookmark._id} initialData={{ items: bookmarkItems }} />
+          <BookmarkList id={currentBookmark._id} initialData={bookmarkItems} />
         </div>
       </div>
     </ScrollArea>

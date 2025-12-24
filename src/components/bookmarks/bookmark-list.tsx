@@ -10,7 +10,12 @@ import { TWEETS_COLLECTION_ID } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 export const BookmarkList = ({ initialData, id }: any) => {
-  const [data, setData] = useState(initialData?.result ? initialData?.items : [])
+  // Handle both old format (initialData.items) and new format (initialData directly as array)
+  const items = Array.isArray(initialData) 
+    ? initialData 
+    : (initialData?.items || [])
+  
+  const [data, setData] = useState(items)
   const [pageIndex, setPageIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
 

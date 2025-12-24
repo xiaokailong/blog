@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { WritingListLayout } from '@/components/writing/writing-list-layout'
 import type { ContentfulPost } from '@/types'
+import { API_BASE_URL } from '@/lib/constants'
 
 export function WritingLayoutClient() {
   const [posts, setPosts] = useState<ContentfulPost[]>([])
@@ -12,7 +13,7 @@ export function WritingLayoutClient() {
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const response = await fetch('/api/posts')
+        const response = await fetch(`${API_BASE_URL}/api/posts`)
         const data = await response.json()
         
         if (data.success) {

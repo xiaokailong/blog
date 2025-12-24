@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
 import { JourneyCard } from '@/components/journey/journey-card'
+import { API_BASE_URL } from '@/lib/constants'
 
 interface JourneyLog {
   title: string
@@ -27,7 +28,7 @@ export function JourneyClient() {
   useEffect(() => {
     async function fetchJourney() {
       try {
-        const response = await fetch('/api/journey')
+        const response = await fetch(`${API_BASE_URL}/api/journey`)
         const data = await response.json()
         
         if (data.success) {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ScreenLoadingSpinner } from '@/components/common/screen-loading-spinner'
+import { API_BASE_URL } from '@/lib/constants'
 
 interface BookmarkCollection {
   id: number
@@ -21,7 +22,7 @@ export function BookmarksPageClient() {
   useEffect(() => {
     async function fetchBookmarks() {
       try {
-        const response = await fetch('/api/bookmarks')
+        const response = await fetch(`${API_BASE_URL}/api/bookmarks`)
         const data = await response.json()
         
         if (data.success) {
