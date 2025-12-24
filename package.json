@@ -1,9 +1,9 @@
 {
-  "name": "blog.velen.fun",
+  "name": "velen-blog",
   "description": "My personal website.",
   "author": {
     "name": "Velen Fan Jiahui",
-    "url": "https://blog.velen.fun"
+    "url": "https://velen-blog.pages.dev"
   },
   "scripts": {
     "dev": "next dev",

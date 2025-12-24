@@ -83,7 +83,7 @@ export function WritingDetailClient({ slug }: { slug: string }) {
       '@type': 'Person',
       name: 'Velen Fan Jiahui'
     },
-    url: `https://blog.velen.fun/writing/${slug}`
+    url: `https://velen-blog.pages.dev/writing/${slug}`
   }
 
   return (
