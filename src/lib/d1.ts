@@ -14,7 +14,7 @@ export function getD1FromEnv(env?: any) {
 }
 
 // Cloudflare D1 REST API访问（用于生产环境）
-async function executeD1RestAPI(sql: string, params: any[] = []) {
+async function executeD1RestAPI(sql: string, params: any[] = [], retries = 3) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
   const databaseId = process.env.CLOUDFLARE_D1_DATABASE_ID || '3dd242d5-f86b-4acb-83e8-04945a47a525'
   const apiToken = process.env.CLOUDFLARE_API_TOKEN
@@ -25,39 +25,66 @@ async function executeD1RestAPI(sql: string, params: any[] = []) {
     return { results: [], success: false, meta: { duration: 0 } }
   }
 
-  try {
-    const response = await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sql,
-          params
-        })
+  let lastError: any = null
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sql,
+            params
+          })
+        }
+      )
+
+      if (!response.ok) {
+        const error = await response.text()
+        console.error(`D1 API Error (attempt ${attempt}/${retries}):`, error)
+        lastError = new Error(`D1 API Error: ${error}`)
+        
+        // 如果还有重试机会，等待后重试
+        if (attempt < retries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
+          continue
+        }
+        throw lastError
       }
-    )
 
-    if (!response.ok) {
-      const error = await response.text()
-      console.error('D1 API Error:', error)
-      throw new Error(`D1 API Error: ${error}`)
+      const result = await response.json()
+      
+      if (!result.success) {
+        console.error(`D1 API returned error (attempt ${attempt}/${retries}):`, result.errors)
+        lastError = new Error('D1 API returned error')
+        
+        if (attempt < retries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
+          continue
+        }
+      }
+      
+      return result.result?.[0] || { results: [], success: true }
+    } catch (error) {
+      console.error(`Error calling D1 REST API (attempt ${attempt}/${retries}):`, error)
+      lastError = error
+      
+      // 如果还有重试机会，等待后重试
+      if (attempt < retries) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
+        continue
+      }
     }
-
-    const result = await response.json()
-    
-    if (!result.success) {
-      console.error('D1 API returned error:', result.errors)
-    }
-    
-    return result.result?.[0] || { results: [], success: true }
-  } catch (error) {
-    console.error('Error calling D1 REST API:', error)
-    return { results: [], success: false, meta: { duration: 0 } }
   }
+
+  // 所有重试都失败
+  console.error(`All ${retries} attempts to connect to Cloudflare D1 failed`)
+  return { results: [], success: false, meta: { duration: 0 } }
 }
 
 // 统一的D1查询接口

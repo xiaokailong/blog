@@ -6,7 +6,7 @@ export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 // 网站启动日期
-const SITE_START_DATE = '2023-01-01'
+const SITE_START_DATE = '2025-12-23'
 
 export async function GET() {
   try {
@@ -26,6 +26,19 @@ export async function GET() {
       totalVisitors = 1000 // 默认值
     }
 
+    // 获取总点赞数
+    let totalLikes = 0
+    try {
+      const result = await d1Helper.queryOne(
+        db,
+        'SELECT COUNT(*) as count FROM site_likes'
+      )
+      totalLikes = result?.count || 0
+    } catch (error) {
+      console.error('Error fetching likes count:', error)
+      totalLikes = 100 // 默认值
+    }
+
     // 计算网站运行天数
     const startDate = new Date(SITE_START_DATE)
     const now = new Date()
@@ -37,6 +50,7 @@ export async function GET() {
       data: {
         totalVisitors,
         daysRunning: diffDays,
+        totalLikes,
         startDate: SITE_START_DATE
       }
     })
@@ -47,7 +61,8 @@ export async function GET() {
       success: true,
       data: {
         totalVisitors: 1000,
-        daysRunning: 730,
+        daysRunning: 4,
+        totalLikes: 100,
         startDate: SITE_START_DATE
       }
     })

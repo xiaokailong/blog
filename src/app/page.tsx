@@ -4,85 +4,70 @@ import { PageTitle } from '@/components/content/page-title'
 import { CodeBlock } from '@/components/home/code-block'
 import { Timeline } from '@/components/home/timeline'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/layout/scroll-area'
 import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="bg-white">
-      <div className="flex min-h-screen items-center justify-center overflow-hidden p-4 sm:p-8">
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-          <PageTitle title="Home" className="lg:hidden" />
+    <ScrollArea className="lg:contents" useScrollAreaId>
+      <div className="bg-white min-h-screen">
+        <PageTitle 
+          title="Home" 
+          className="lg:hidden" 
+        />
+        <div className="flex items-center justify-center overflow-hidden p-4 sm:p-8">
+        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-12">
           {/* 左侧：个人介绍 */}
-          <div className="flex flex-col justify-center space-y-6">
-            <div className="space-y-4">
-              <h1 className="text-3xl font-bold tracking-tight text-black sm:text-4xl lg:text-5xl">Velen Fan Jiahui</h1>
+          <div className="flex flex-col justify-center space-y-4 sm:space-y-6">
+            <div className="space-y-3 sm:space-y-4">
+              <h1 className="text-2xl font-bold tracking-tight text-black sm:text-3xl lg:text-3xl">Velen Fan Jiahui</h1>
 
-              <div className="text-base text-gray-600 sm:text-lg lg:text-xl">
+              <div className="text-base text-gray-600 sm:text-lg lg:text-xl h-5">
                 <Typewriter
                   texts={[
                     'Frontend Engineer',
                     'React & Angular Developer',
-                    'UI/UX Enthusiast',
+                    'UI/UX Experience Enthusiast',
                     'Building elegant interfaces'
                   ]}
                 />
               </div>
 
               <p className="text-sm leading-relaxed text-gray-700 sm:text-base">
-                Based in Dalian, China. Crafting exceptional web experiences with modern technologies. Passionate about
-                clean code, beautiful design, and seamless user experiences.
+                Hello guys! I'm a Senior Frontend Engineer at a Fortune 500 multinational corporation, where I bring creativity and technical excellence to crafting exceptional web experiences.
               </p>
-            </div>
 
-            {/* 统计信息 */}
-            <div className="pt-4">
-              <StatsDisplay />
-            </div>
-
-            {/* 快速链接 */}
-            <div className="flex flex-wrap gap-2 pt-2 sm:gap-3">
-              <Button asChild variant="default" className="bg-black text-xs text-white hover:bg-gray-800 sm:text-sm">
-                <Link href="/writing">📝 Writing</Link>
-              </Button>
-              <Button asChild variant="outline" className="border-gray-300 text-xs sm:text-sm">
-                <Link href="/interview">📚 Interview</Link>
-              </Button>
-              <Button asChild variant="outline" className="border-gray-300 text-xs sm:text-sm">
-                <Link href="/bookmarks">🔖 Bookmarks</Link>
-              </Button>
-              <Button asChild variant="outline" className="border-gray-300 text-xs sm:text-sm">
-                <Link href="/journey">🚀 Journey</Link>
-              </Button>
-              <Button asChild variant="outline" className="border-gray-300 text-xs sm:text-sm">
-                <Link href="/workspace">💼 Workspace</Link>
-              </Button>
-            </div>
-
-            {/* 技能标签 */}
-            <div className="border-t border-gray-200 pt-4">
-              <h3 className="mb-2 text-sm font-semibold text-gray-900 sm:mb-3">Tech Stack</h3>
+              <p className="text-sm leading-relaxed text-gray-700 sm:text-base">
+                With a deep passion for programming and innovative design, I find inspiration in music and continuously enhance my English proficiency.
+              </p>
+              
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {['React', 'Angular', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js'].map((tech) => (
+                {['Angular', 'React', 'Vue', 'WeChatAPP', 'Next.js', 'Node.js', 'RxJS', 'AG Grid', 'Electron', 'AI Coding'].map((tech) => (
                   <span
                     key={tech}
-                    className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 transition-colors hover:bg-gray-200 sm:px-3 sm:py-1"
+                    className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 transition-colors hover:bg-gray-200 sm:px-3 sm:text-sm"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
             </div>
+
+            {/* 统计信息 */}
+            <div className="">
+              <StatsDisplay />
+            </div>
           </div>
 
           {/* 右侧：代码块 */}
-          <div className="mt-8 flex items-center lg:mt-0">
+          <div className="flex items-center">
             <CodeBlock />
           </div>
         </div>
       </div>
-
       {/* 时间轴部分 */}
       <Timeline />
-    </div>
+      </div>
+    </ScrollArea>
   )
 }

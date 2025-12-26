@@ -1,0 +1,121 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║          Cloudflare D1 数据库初始化 - 快速参考                    ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+📌 数据库信息
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  数据库名称: blog-db
+  数据库ID:   3dd242d5-f86b-4acb-83e8-04945a47a525
+  账号ID:     24c17bbd73ff03387abaa5960296320d
+
+🎯 需要创建的7个表
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. posts              - 文章内容
+  2. view_counts        - 浏览量统计
+  3. bookmarks          - 书签数据
+  4. bookmark_collections - 书签分类
+  5. journey_items      - 旅程时间线
+  6. page_views         - 页面访问记录（需要！）
+  7. site_likes         - 网站点赞（需要！）
+
+🚀 推荐初始化方式
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  【方式1】Cloudflare Dashboard（最简单）
+  ────────────────────────────────────────────────────────────────
+  1. 访问: https://dash.cloudflare.com/.../workers/d1
+  2. 选择 blog-db 数据库
+  3. 进入 Console 标签
+  4. 打开 MANUAL_DB_INIT.md
+  5. 复制SQL语句到Console执行
+  
+  ✅ 优点: 无需配置，直接在浏览器操作
+  ⏱️  时间: 约5分钟
+
+  【方式2】wrangler命令行
+  ────────────────────────────────────────────────────────────────
+  PowerShell:
+    $env:NODE_TLS_REJECT_UNAUTHORIZED="0"
+    npx wrangler login
+    npx wrangler d1 execute blog-db --file=./db/complete-init.sql --remote
+  
+  ✅ 优点: 快速批量执行
+  ⚠️  注意: 需要正确的权限
+
+  【方式3】批处理脚本
+  ────────────────────────────────────────────────────────────────
+  Windows:
+    .\init-database.bat
+
+  PowerShell:
+    .\init-database.ps1
+
+🔍 验证数据库
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  查看所有表:
+    SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;
+  
+  统计表记录:
+    SELECT COUNT(*) FROM posts;
+    SELECT COUNT(*) FROM page_views;
+    SELECT COUNT(*) FROM site_likes;
+
+  使用脚本检查:
+    .\check-database.bat
+
+📡 测试API接口
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  启动服务器:
+    npm run dev
+  
+  测试接口:
+    http://localhost:3000/api/stats
+    http://localhost:3000/api/test-db
+    http://localhost:3000/api/posts
+
+⚠️ 常见问题
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  Q: Authentication error [code: 10000]
+  A: API Token权限不足
+     → 重新创建Token，确保有 D1 Edit 权限
+  
+  Q: SSL证书错误
+  A: 设置: $env:NODE_TLS_REJECT_UNAUTHORIZED="0"
+  
+  Q: 接口返回空数据
+  A: 表可能未创建
+     → 检查: npx wrangler d1 execute blog-db --command="..." --remote
+  
+  Q: wrangler命令失败
+  A: 使用Cloudflare Dashboard手动创建（见方式1）
+
+📚 文档索引
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  MANUAL_DB_INIT.md          - 详细手动操作步骤（推荐）
+  CLOUDFLARE_SETUP_GUIDE.md  - API Token配置指南
+  DATABASE_SYNC.md           - 数据库同步说明
+  
+  db/complete-init.sql       - 完整初始化SQL
+  db/schema.sql              - 数据库模式定义
+  
+  init-database.bat          - Windows批处理脚本
+  init-database.ps1          - PowerShell脚本
+  init-db-direct.js          - Node.js直接初始化
+
+✨ 初始化完成后
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  ✅ 所有7个表都已创建
+  ✅ 所有索引都已创建
+  ✅ 启动开发服务器: npm run dev
+  ✅ 访问: http://localhost:3000
+  ✅ 检查首页统计数据是否显示
+  ✅ 测试点赞功能是否工作
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+需要帮助？查看 MANUAL_DB_INIT.md 获取详细步骤
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
