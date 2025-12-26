@@ -48,7 +48,7 @@ export async function GET() {
         console.error('Error initializing homepage table:', initError)
         // 返回默认值
         homepageData = {
-          introduction: 'Hello guys! I''m a Senior Frontend Engineer at a Fortune 500 multinational corporation.',
+          introduction: 'Hello guys! I\'m a Senior Frontend Engineer at a Fortune 500 multinational corporation.',
           site_start_date: '2025-12-23',
           visit_count: 0,
           like_count: 0
