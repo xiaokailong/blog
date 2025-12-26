@@ -5,37 +5,30 @@ import { getDB } from '@/lib/db'
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     const db = getDB()
     
-    // 获取访客IP（简化版）
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.headers.get('x-real-ip') || 
-               'unknown'
-
     try {
-      // 记录点赞
+      // 增加点赞计数
       await d1Helper.execute(
         db,
-        `INSERT INTO site_likes (ip_address, liked_at) 
-         VALUES (?, datetime('now'))`,
-        [ip]
+        `UPDATE homepage SET like_count = like_count + 1, updated_at = datetime('now') WHERE id = 1`
       )
 
       // 获取更新后的总点赞数
       const result = await d1Helper.queryOne(
         db,
-        'SELECT COUNT(*) as count FROM site_likes'
+        'SELECT like_count FROM homepage WHERE id = 1'
       )
       
       return NextResponse.json({ 
         success: true,
-        totalLikes: result?.count || 0
+        likeCount: result?.like_count || 0
       })
     } catch (error) {
       console.error('Error recording like:', error)
-      return NextResponse.json({ success: true, totalLikes: 0 })
+      return NextResponse.json({ success: true, likeCount: 0 })
     }
   } catch (error) {
     console.error('Error in POST /api/stats/like:', error)

@@ -1,100 +1,119 @@
 import { NextResponse } from 'next/server'
-import { d1Helper, getD1FromEnv } from '@/lib/d1'
+import { d1Helper } from '@/lib/d1'
 import { getDB } from '@/lib/db'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
-// 网站启动日期
-const SITE_START_DATE = '2025-12-23'
-
 export async function GET() {
   try {
     const db = getDB()
     
-    // 获取总访问人数
-    let totalVisitors = 0
+    // 从 homepage 表获取所有数据
+    let homepageData
     try {
-      const result = await d1Helper.queryOne(
+      homepageData = await d1Helper.queryOne(
         db,
-        'SELECT COUNT(DISTINCT ip_address) as count FROM page_views'
+        'SELECT * FROM homepage WHERE id = 1'
       )
-      totalVisitors = result?.count || 0
     } catch (error) {
-      console.error('Error fetching visitor count:', error)
-      // 如果表不存在，返回默认值
-      totalVisitors = 1000 // 默认值
-    }
-
-    // 获取总点赞数
-    let totalLikes = 0
-    try {
-      const result = await d1Helper.queryOne(
-        db,
-        'SELECT COUNT(*) as count FROM site_likes'
-      )
-      totalLikes = result?.count || 0
-    } catch (error) {
-      console.error('Error fetching likes count:', error)
-      totalLikes = 100 // 默认值
+      console.error('Error fetching homepage data:', error)
+      
+      // 如果表不存在或查询失败，尝试创建表
+      try {
+        await d1Helper.execute(db, `
+          CREATE TABLE IF NOT EXISTS homepage (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            introduction TEXT DEFAULT 'Hello guys! I''m a Senior Frontend Engineer at a Fortune 500 multinational corporation, where I bring creativity and technical excellence to crafting exceptional web experiences.',
+            site_start_date TEXT DEFAULT '2025-12-23',
+            visit_count INTEGER DEFAULT 0,
+            like_count INTEGER DEFAULT 0,
+            updated_at TEXT DEFAULT (datetime('now')),
+            CHECK (id = 1)
+          )
+        `)
+        
+        // 插入初始数据
+        await d1Helper.execute(db, `
+          INSERT OR IGNORE INTO homepage (id, site_start_date, visit_count, like_count)
+          VALUES (1, '2025-12-23', 0, 0)
+        `)
+        
+        // 再次查询
+        homepageData = await d1Helper.queryOne(
+          db,
+          'SELECT * FROM homepage WHERE id = 1'
+        )
+      } catch (initError) {
+        console.error('Error initializing homepage table:', initError)
+        // 返回默认值
+        homepageData = {
+          introduction: 'Hello guys! I''m a Senior Frontend Engineer at a Fortune 500 multinational corporation.',
+          site_start_date: '2025-12-23',
+          visit_count: 0,
+          like_count: 0
+        }
+      }
     }
 
     // 计算网站运行天数
-    const startDate = new Date(SITE_START_DATE)
+    const startDate = new Date(homepageData.site_start_date || '2025-12-23')
     const now = new Date()
     const diffTime = Math.abs(now.getTime() - startDate.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    const daysRunning = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
     return NextResponse.json({
       success: true,
       data: {
-        totalVisitors,
-        daysRunning: diffDays,
-        totalLikes,
-        startDate: SITE_START_DATE
+        introduction: homepageData.introduction || '',
+        siteStartDate: homepageData.site_start_date,
+        daysRunning,
+        visitCount: homepageData.visit_count || 0,
+        likeCount: homepageData.like_count || 0
       }
     })
   } catch (error) {
-    console.error('Error fetching stats:', error)
+    console.error('Error in GET /api/stats:', error)
     // 返回默认值而不是错误
     return NextResponse.json({
       success: true,
       data: {
-        totalVisitors: 1000,
+        introduction: '',
+        siteStartDate: '2025-12-23',
         daysRunning: 4,
-        totalLikes: 100,
-        startDate: SITE_START_DATE
+        visitCount: 0,
+        likeCount: 0
       }
     })
   }
 }
 
-// 记录访客
-export async function POST(request: Request) {
+// 记录访问（每次访问+1，不管是谁）
+export async function POST() {
   try {
     const db = getDB()
-    const { page } = await request.json()
     
-    // 获取访客IP（简化版）
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.headers.get('x-real-ip') || 
-               'unknown'
-
     try {
-      // 插入访问记录
+      // 增加访问计数
       await d1Helper.execute(
         db,
-        `INSERT INTO page_views (ip_address, page, visited_at) 
-         VALUES (?, ?, datetime('now'))
-         ON CONFLICT(ip_address, page) 
-         DO UPDATE SET visited_at = datetime('now')`,
-        [ip, page]
+        `UPDATE homepage SET visit_count = visit_count + 1, updated_at = datetime('now') WHERE id = 1`
       )
+      
+      // 获取更新后的数据
+      const result = await d1Helper.queryOne(
+        db,
+        'SELECT visit_count FROM homepage WHERE id = 1'
+      )
+      
+      return NextResponse.json({ 
+        success: true,
+        visitCount: result?.visit_count || 0
+      })
     } catch (error) {
       console.error('Error recording visit:', error)
+      return NextResponse.json({ success: true, visitCount: 0 })
     }
-
-    return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error in POST /api/stats:', error)
     return NextResponse.json({ success: false }, { status: 500 })

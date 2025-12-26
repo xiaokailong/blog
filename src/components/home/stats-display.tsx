@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react'
 import { ClockIcon, EyeIcon, HeartIcon } from 'lucide-react'
 
 interface StatsData {
-  totalVisitors: number
+  visitCount: number
   daysRunning: number
-  totalLikes: number
-  startDate: string
+  likeCount: number
+  siteStartDate: string
+  introduction: string
 }
 
 export function StatsDisplay() {
@@ -24,7 +25,7 @@ export function StatsDisplay() {
         const data = await response.json()
         if (data.success) {
           setStats(data.data)
-          setLocalLikes(data.data.totalLikes || 0)
+          setLocalLikes(data.data.likeCount || 0)
         }
       } catch (error) {
         console.error('Failed to fetch stats:', error)
@@ -35,11 +36,10 @@ export function StatsDisplay() {
 
     fetchStats()
 
-    // 记录访问
+    // 记录访问 - 每次访问都会递增
     fetch('/api/stats', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ page: '/' })
+      headers: { 'Content-Type': 'application/json' }
     }).catch(() => {})
 
     // 心跳动画，每8秒缓慢闪动一次
@@ -100,7 +100,7 @@ export function StatsDisplay() {
       <div className="flex items-center gap-2">
         <EyeIcon size={16} className="text-gray-500" />
         <span>
-          <span className="font-mono font-semibold text-black">{stats.totalVisitors.toLocaleString()}</span> visitors
+          <span className="font-mono font-semibold text-black">{stats.visitCount.toLocaleString()}</span> visitors
         </span>
       </div>
       <div className="relative flex items-center gap-2">

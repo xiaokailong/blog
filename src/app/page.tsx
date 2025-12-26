@@ -1,3 +1,4 @@
+import { FloatingHeader } from '@/components/layout/floating-header'
 import { Typewriter } from '@/components/home/typewriter'
 import { StatsDisplay } from '@/components/home/stats-display'
 import { PageTitle } from '@/components/content/page-title'
@@ -10,6 +11,7 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <ScrollArea className="lg:contents" useScrollAreaId>
+      <FloatingHeader scrollTitle="Velen Fan Jiahui" />
       <div className="bg-white min-h-screen">
         <PageTitle 
           title="Home" 
