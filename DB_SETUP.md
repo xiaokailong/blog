@@ -1,85 +1,30 @@
 # 数据库设置指南
 
+## 重要说明
+
+⚠️ **本项目不使用本地数据库** - 开发环境和生产环境都直接使用 Cloudflare D1 生产数据库。
+
+## API配置
+
+所有环境（开发和生产）都使用生产API：
+- **API Base URL**: `https://velen-blog.pages.dev/api`
+- 前端组件通过 `@/lib/config` 中的 `getApiUrl()` 函数统一调用生产API
+- API路由已配置CORS，支持跨域访问
+
 ## 快速初始化
 
-### 本地开发环境
-
-```powershell
-# 初始化本地数据库
-npx wrangler d1 execute blog-db --file=./db/complete-init.sql --local
-
-# 或者只初始化首页数据
-npx wrangler d1 execute blog-db --file=./db/homepage-redesign.sql --local
-```
-
-### 生产环境
+### 生产环境数据库
 
 ```powershell
 # 设置环境变量（避免SSL错误）
 $env:NODE_TLS_REJECT_UNAUTHORIZED='0'
 
-# 初始化远程数据库
+# 初始化数据库
 npx wrangler d1 execute blog-db --file=./db/complete-init.sql --remote
 
 # 或者只初始化首页数据
 npx wrangler d1 execute blog-db --file=./db/homepage-redesign.sql --remote
 ```
-
-## 数据库检查
-
-### 查看所有表
-
-```powershell
-# 本地
-npx wrangler d1 execute blog-db --command="SELECT name FROM sqlite_master WHERE type='table'" --local
-
-# 远程
-$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; npx wrangler d1 execute blog-db --command="SELECT name FROM sqlite_master WHERE type='table'" --remote
-```
-
-### 查看首页统计数据
-
-```powershell
-# 本地
-npx wrangler d1 execute blog-db --command="SELECT * FROM homepage WHERE id = 1" --local
-
-# 远程
-$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; npx wrangler d1 execute blog-db --command="SELECT * FROM homepage WHERE id = 1" --remote
-```
-
-## 常用脚本
-
-### 检查数据库状态
-
-```powershell
-.\check-database.bat
-```
-
-### 测试API接口
-
-```powershell
-.\test-apis.bat
-```
-
-## 数据库文件说明
-
-- **complete-init.sql** - 完整数据库初始化（包含所有表和种子数据）
-- **homepage-redesign.sql** - 首页数据表初始化
-- **schema.sql** - 数据库表结构定义
-- **seed.sql** - 种子数据
-- **journey-onur-dev.sql** - Journey时间轴数据
-- **clean.sql** - 清空所有表数据（慎用！）
-
-## 表结构概览
-
-1. **homepage** - 首页统计（访问量、点赞数、运行天数）
-2. **posts** - 文章内容
-3. **view_counts** - 文章浏览统计
-4. **bookmarks** - 书签数据
-5. **bookmark_collections** - 书签分类
-6. **journey_items** - 旅程时间线
-7. **page_views** - 页面访问记录
-8. **site_likes** - 网站点赞（已弃用，改用homepage表）
 
 ## 环境变量配置
 
@@ -108,3 +53,10 @@ CLOUDFLARE_API_TOKEN=your_api_token  # 可选，wrangler login后不需要
 ### 本地开发环境无法访问数据库
 
 确保已执行本地数据库初始化命令。
+ - 生产环境配置
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+CLOUDFLARE_DATABASE_ID=your_database_id
+CLOUDFLARE_API_TOKEN=your_api_token  # API路由需要此token访问数据库
+```
+
+**注意**：开发环境和生产环境共用同一个数据库，前端直接调用生产API。

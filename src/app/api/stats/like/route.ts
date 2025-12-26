@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server'
 import { d1Helper } from '@/lib/d1'
 import { getDB } from '@/lib/db'
+import { handleCors, handleOptions } from '@/lib/cors'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
+
+// 处理OPTIONS请求（CORS预检）
+export async function OPTIONS() {
+  return handleOptions()
+}
 
 export async function POST() {
   try {
@@ -22,16 +28,19 @@ export async function POST() {
         'SELECT like_count FROM homepage WHERE id = 1'
       )
       
-      return NextResponse.json({ 
+      const response = NextResponse.json({ 
         success: true,
         likeCount: result?.like_count || 0
       })
+      return handleCors(response)
     } catch (error) {
       console.error('Error recording like:', error)
-      return NextResponse.json({ success: true, likeCount: 0 })
+      const response = NextResponse.json({ success: true, likeCount: 0 })
+      return handleCors(response)
     }
   } catch (error) {
     console.error('Error in POST /api/stats/like:', error)
-    return NextResponse.json({ success: false }, { status: 500 })
+    const response = NextResponse.json({ success: false }, { status: 500 })
+    return handleCors(response)
   }
 }

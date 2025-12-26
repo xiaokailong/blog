@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server'
 import { d1Helper } from '@/lib/d1'
 import { getDB } from '@/lib/db'
+import { handleCors, handleOptions } from '@/lib/cors'
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
+
+// 处理OPTIONS请求（CORS预检）
+export async function OPTIONS() {
+  return handleOptions()
+}
 
 export async function GET() {
   try {
@@ -62,7 +68,7 @@ export async function GET() {
     const diffTime = Math.abs(now.getTime() - startDate.getTime())
     const daysRunning = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         introduction: homepageData.introduction || '',
@@ -72,10 +78,11 @@ export async function GET() {
         likeCount: homepageData.like_count || 0
       }
     })
+    return handleCors(response)
   } catch (error) {
     console.error('Error in GET /api/stats:', error)
     // 返回默认值而不是错误
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         introduction: '',
@@ -85,6 +92,7 @@ export async function GET() {
         likeCount: 0
       }
     })
+    return handleCors(response)
   }
 }
 
@@ -106,16 +114,19 @@ export async function POST() {
         'SELECT visit_count FROM homepage WHERE id = 1'
       )
       
-      return NextResponse.json({ 
+      const response = NextResponse.json({ 
         success: true,
         visitCount: result?.visit_count || 0
       })
+      return handleCors(response)
     } catch (error) {
       console.error('Error recording visit:', error)
-      return NextResponse.json({ success: true, visitCount: 0 })
+      const response = NextResponse.json({ success: true, visitCount: 0 })
+      return handleCors(response)
     }
   } catch (error) {
     console.error('Error in POST /api/stats:', error)
-    return NextResponse.json({ success: false }, { status: 500 })
+    const response = NextResponse.json({ success: false }, { status: 500 })
+    return handleCors(response)
   }
 }

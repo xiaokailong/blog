@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { API_BASE_URL } from '@/lib/constants'
+import { getApiUrl } from '@/lib/config'
 import type { ViewCount } from '@/types'
 
 export const useViewData = (slug?: string) => {
@@ -11,7 +11,7 @@ export const useViewData = (slug?: string) => {
     async function getViewData() {
       try {
         // 使用API路由获取浏览量数据
-        const response = await fetch('/api/view-counts')
+        const response = await fetch(getApiUrl('/view-counts'))
         if (!response.ok) throw new Error('Failed to fetch view data')
         
         const data = await response.json()

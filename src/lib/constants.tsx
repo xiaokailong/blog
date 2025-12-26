@@ -13,7 +13,7 @@ import {
 
 export const PROFILES = {
   twitter: {
-    title: 'X (Twitter)',
+    title: 'Twitter',
     username: 'Velen',
     url: 'https://twitter.com/intent/user?screen_name=Velen',
     icon: (
@@ -40,18 +40,18 @@ export const PROFILES = {
     url: 'https://github.com/xiaokailong',
     icon: <GithubIcon size={16} />
   },
-  linkedin: {
-    title: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/xiaokailong',
-    icon: <LinkedinIcon size={16} />
-  },
+  // linkedin: {
+  //   title: 'LinkedIn',
+  //   url: 'https://www.linkedin.com/in/xiaokailong',
+  //   icon: <LinkedinIcon size={16} />
+  // },
   medium: {
     title: 'Medium',
     url: 'https://xiaokailong.medium.com'
   },
-  instagram: {
-    title: 'Instagram',
-    url: 'https://www.instagram.com/jgrmn',
+  resume: {
+    title: 'Resume',
+    url: 'https://velen-profile.pages.dev/',
     icon: <InstagramIcon size={16} />
   },
   youtube: {
@@ -76,24 +76,6 @@ export const PROFILES = {
   //   url: 'https://nl.pinterest.com/Velen'
   // }
 }
-
-export const TWEETS_COLLECTION_ID = 15896982
-
-export const COLLECTION_IDS = [
-  18259129,
-  15968768,
-  23598938,
-  16949672,
-  15807896,
-  15807897,
-  15969648,
-  16338467,
-  TWEETS_COLLECTION_ID,
-  25589709,
-  17139082,
-  22029101,
-  39696243
-]
 
 export const LINKS = [
   {
@@ -122,14 +104,14 @@ export const LINKS = [
     )
   },
   {
-    href: '/writing',
-    label: 'Writing',
-    icon: <PencilLineIcon size={16} />
-  },
-  {
     href: '/journey',
     label: 'Journey',
     icon: <NavigationIcon size={16} />
+  },
+  {
+    href: '/writing',
+    label: 'Writing',
+    icon: <PencilLineIcon size={16} />
   },
   {
     href: '/stack',

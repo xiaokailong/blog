@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { ClockIcon, EyeIcon, HeartIcon } from 'lucide-react'
+import { getApiUrl } from '@/lib/config'
 
 interface StatsData {
   visitCount: number
@@ -21,7 +22,7 @@ export function StatsDisplay() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const response = await fetch('/api/stats')
+        const response = await fetch(getApiUrl('/stats'))
         const data = await response.json()
         if (data.success) {
           setStats(data.data)
@@ -37,7 +38,7 @@ export function StatsDisplay() {
     fetchStats()
 
     // 记录访问 - 每次访问都会递增
-    fetch('/api/stats', {
+    fetch(getApiUrl('/stats'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     }).catch(() => {})
@@ -59,7 +60,7 @@ export function StatsDisplay() {
 
     // 发送到服务器
     try {
-      await fetch('/api/stats/like', {
+      await fetch(getApiUrl('/stats/like'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })

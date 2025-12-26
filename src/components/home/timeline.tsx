@@ -123,6 +123,12 @@ export function Timeline() {
                   }`}>
                     {item.title}
                   </h3>
+
+                  {item.description && (
+                      <p className="text-xs text-gray-600 mt-1 leading-relaxed lg:hidden">
+                        {item.description}
+                      </p>
+                    )}
                 </div>
               </div>
             ))}
