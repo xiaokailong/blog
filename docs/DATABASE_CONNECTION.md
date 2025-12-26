@@ -1,5 +1,7 @@
 # Cloudflare D1 数据库连接方式总结
 
+## 注意，我们没有本地数据库，本地开发使用的也是生产数据库和生产的接口
+
 ## ✅ 推荐方式：使用 wrangler OAuth 登录
 
 ### 为什么使用 OAuth？
@@ -37,7 +39,7 @@ npx wrangler d1 execute blog-db --command="SELECT name FROM sqlite_master WHERE 
 
 **执行 SQL 文件：**
 ```powershell
-npx wrangler d1 execute blog-db --file=./db/your-script.sql --remote
+$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; npx wrangler d1 execute blog-db --file=./db/your-script.sql --remote
 ```
 
 **执行单条 SQL：**
@@ -129,7 +131,6 @@ await d1Helper.batch(db, [
 ```
 
 ## 常用命令速查
-$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; npx wrangler d1 execute blog-db --file=./db/homepage-redesign.sql --remote
 
 ```powershell
 # 登录
@@ -222,7 +223,7 @@ export function getDB() {
 **原因**：数据库未初始化  
 **解决**：执行初始化脚本
 ```powershell
-npx wrangler d1 execute blog-db --file=./db/schema.sql --remote
+$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; npx wrangler d1 execute blog-db--file=./db/schema.sql --remote
 ```
 
 ### 问题：端口被占用
@@ -248,7 +249,7 @@ npx wrangler login
 npx wrangler d1 execute blog-db --command="SELECT name FROM sqlite_master WHERE type='table';" --remote
 
 # 3. 创建/修改表
-npx wrangler d1 execute blog-db --file=./db/new-table.sql --remote
+$env:NODE_TLS_REJECT_UNAUTHORIZED='0'; npx wrangler d1 execute blog-db --file=./db/new-table.sql --remote
 
 # 4. 验证结果
 npx wrangler d1 execute blog-db --command="SELECT * FROM new_table;" --remote

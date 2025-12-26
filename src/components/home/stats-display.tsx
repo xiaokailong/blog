@@ -55,7 +55,7 @@ export function StatsDisplay() {
     // 立即更新本地显示
     setLocalLikes((prev) => prev + 1)
     setShowPlusOne(true)
-    setTimeout(() => setShowPlusOne(false), 1000)
+    setTimeout(() => setShowPlusOne(false),  )
 
     // 发送到服务器
     try {
